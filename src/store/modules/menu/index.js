@@ -1,4 +1,4 @@
-/*
+/* 获取用户权限的路由路径
  * @Description:
  * @Author: gumingchen
  * @Email: 1240235512@qq.com
@@ -99,6 +99,7 @@ export default {
      */
     async getMenuAndPermission({ commit, dispatch }) {
       const r = await selfInfoApi()
+      // const r=false
       if (r) {
         dispatch('setGet', true)
         setMenuAndPermission(r.data)

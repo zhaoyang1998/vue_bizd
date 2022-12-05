@@ -86,50 +86,28 @@ function addRoutes(menus = [], routeList = []) {
       list = list.concat(item.children)
     }
     let route
-    switch (item.type) {
-      case 3:
-        route = {
-          path: `/i-${ item.menu_id }`,
-          name: `i-${ item.menu_id }`,
-          component: () => import(`@/views/modules/iframe/index.vue`),
-          meta: {
-            id: item.menu_id,
-            title_cn: item.name_cn,
-            title_en: item.name_en,
-            type: item.type,
-            url: item.url,
-            dynamic: true,
-            tab: item.tab === 1,
-            keepalive: item.keepalive === 1,
-            multiple: item.multiple === 1
-          }
+
+    //根据接口来添加侧边栏
+    if (item.url && /\S/u.test(item.url)) {
+      route = {
+        path: item.path || `/${ item.url.replace(/\//g, '-') }`,
+        name: item.name || item.url.replace(/\//g, '-'),
+        component: () => import(`@/views/modules/${ item.url }.vue`) || null,
+        meta: {
+          id: item.menu_id,
+          title_cn: item.name_cn,
+          title_en: item.name_en,
+          type: item.type,
+          url: item.url,
+          dynamic: true,
+          tab: item.tab === 1,
+          keepalive: item.keepalive === 1,
+          multiple: item.multiple === 1
         }
-        break
-      case 0:
-        break
-      case 4:
-        break
-      default:
-        if (item.url && /\S/u.test(item.url)) {
-          route = {
-            path: item.path || `/${ item.url.replace(/\//g, '-') }`,
-            name: item.name || item.url.replace(/\//g, '-'),
-            component: () => import(`@/views/modules/${ item.url }.vue`) || null,
-            meta: {
-              id: item.menu_id,
-              title_cn: item.name_cn,
-              title_en: item.name_en,
-              type: item.type,
-              url: item.url,
-              dynamic: true,
-              tab: item.tab === 1,
-              keepalive: item.keepalive === 1,
-              multiple: item.multiple === 1
-            }
-          }
-        }
-        break
+      }
     }
+
+
     if (route) {
       routeList.push(route)
     }

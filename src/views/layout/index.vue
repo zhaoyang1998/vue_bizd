@@ -12,8 +12,7 @@
         <View class="margin-20 flex-item_f-1" transition="left-in-right-out" />
       </template>
     </component>
-    <Websocket />
-  </div>
+   </div>
 </template>
 
 <script>
@@ -26,10 +25,9 @@ import Tabsbar from './components/tabsbar/index.vue'
 import View from '@/components/view/index.vue'
 import NavigationActive from './components/navigation/active/index.vue'
 import NavigationFixed from './components/navigation/fixed/index.vue'
-import Websocket from './components/websocket/index.vue'
 
 export default defineComponent({
-  components: { Sidebar, Headbar, Tabsbar, View, NavigationActive, NavigationFixed, Websocket },
+  components: { Sidebar, Headbar, Tabsbar, View, NavigationActive, NavigationFixed },
   setup() {
     const store = useStore()
 

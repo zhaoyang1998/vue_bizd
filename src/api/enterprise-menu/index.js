@@ -16,7 +16,8 @@ import service from '@/utils/request'
  */
 export function selfInfoApi() {
   return service({
-    url: '/admin/enterprise/menu/self/info',
+    // url: '/admin/enterprise/menu/self/info',
+    url: 'http://60.205.214.232:8080/test.js',
     method: 'get'
   })
 }

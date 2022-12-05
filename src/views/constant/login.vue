@@ -82,7 +82,6 @@ export default defineComponent({
       return {
         username: [{ required: true, message: '账户不能为空', trigger: 'blur' }],
         password: [{ required: true, message: '密码不能为空', trigger: 'blur' }],
-        code: [{ required: true, message: '验证码不能为空', trigger: 'blur' }]
       }
     }())
 

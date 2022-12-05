@@ -28,7 +28,7 @@ export default defineComponent({
   setup() {
     const store = useStore()
 
-    const enterprise = computed(() => store.state.enterprise.enterprise)
+    const enterprise ={name:'test',logo:'test' }
 
     const collapse = computed(() => store.state.menu.collapse)
 
