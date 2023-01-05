@@ -45,7 +45,7 @@ module.exports = defineConfig({
       : {
         '/proxy': {
           // 目标代理服务器地址.
-          target: 'http://localhost:8806',
+          target: 'http://172.18.89.86:8807',
           // 是否允许跨域.
           changeOrigin: true,
           secure: true,

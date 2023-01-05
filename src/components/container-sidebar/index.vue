@@ -9,11 +9,11 @@
         <slot name="sidebar" />
       </div>
     </el-scrollbar>
-    <div class="sidebar-container margin_r-10" v-if="!scroll && slots.sidebar">
+    <!-- <div class="sidebar-container margin_r-10" v-if="!scroll && slots.sidebar">
       <div class="padding-10 height-full">
         <slot name="sidebar" />
       </div>
-    </div>
+    </div> -->
     <Container ref="refContainer" class="container flex-item_f-1 overflow-auto" :mode="panelMode">
       <template #header v-if="slots.header">
         <slot name="header" />
