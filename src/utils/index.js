@@ -209,7 +209,7 @@ export function havePermission(permission, separator = '&') {
 export function getApiBaseUrl () {
   const baseUrl = process.env.VUE_APP_PROXY === 'true'
     ? `/proxy${ MAPPING }`
-    : process.env.VUE_APP_BASE_API + MAPPING
+    : process.env.VUE_APP_BASE_API
   return baseUrl
 }
 

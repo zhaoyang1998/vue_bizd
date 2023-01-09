@@ -116,7 +116,7 @@ export default defineComponent({
 
     const init = async (enterpriseId, id) => {
       data.visible = true
-      data.loading = true
+      data.loading = false
       data.form.enterprise_id = enterpriseId
       data.form.id = id
 
