@@ -24,7 +24,7 @@
             </template>
           </el-input>
         </el-form-item>
-        <el-form-item prop="code">
+        <!-- <el-form-item prop="code">
           <el-input
             class="flex-item_f-1"
             v-model="form.code"
@@ -39,7 +39,7 @@
             :src="captcha"
             @click="getCaptcha()"
             alt="验证码">
-        </el-form-item>
+        </el-form-item> -->
         <el-button
           v-repeat
           :loading="loading"

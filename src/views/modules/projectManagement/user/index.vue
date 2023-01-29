@@ -32,6 +32,12 @@
         <el-table-column align="center" label="微信名" prop="wxName" />
         <el-table-column align="center" label="工作量" prop="currentWorkload" />
         <el-table-column align="center" label="优先级" prop="priority" />
+        <!-- <el-table-column align="center" label="TYPE" prop="type">
+          <template #default>
+            <div>{{scope.row.type ? "lalal" : "hehehe"}}</div>
+          </template>
+        </el-table-column> -->
+
         <!-- <el-table-column align="center" label="操作" width="110" fixed="right">
           <template v-slot="{ row }">
             <el-button
@@ -94,11 +100,10 @@ export default defineComponent({
       selection: [],
       user: []
     });
-    // const user = ref([]);
     
     const handleGetAllUser = async() =>{
       const u = await getAllUser();
-      data.user = u.data;
+      data.user = JSON.parse(u.data);
       console.log(data.user);
     }
 

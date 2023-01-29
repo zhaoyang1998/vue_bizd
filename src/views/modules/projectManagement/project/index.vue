@@ -9,7 +9,7 @@
           <el-input v-model="form.name" placeholder="名称" clearable />
         </el-form-item>
         <el-form-item>
-          <el-button v-repeat @click="reacquireHandle()">搜索</el-button>
+          <el-button v-repeat @click="handleGetAllProject()">搜索</el-button>
           <el-button v-repeat @click="clearJson(form), reacquireHandle()"
             >重置</el-button
           >
@@ -22,40 +22,42 @@
       <el-table
         ref="refTable"
         v-loading="loading"
-        :data="list"
+        :data="project"
         @selection-change="selectionHandle"
         border
       >
-        <el-table-column align="center" type="selection" width="50" />
-        <el-table-column align="center" label="创建者" prop="id" width="80" />
-        <el-table-column align="center" label="客户" prop="name" />
-        <el-table-column align="center" label="实施点" prop="remark" />
+        <el-table-column fixed align="center" type="selection" width="50" />
+        <el-table-column align="center" label="创建者" prop="userName" width="80" />
+        <el-table-column align="center" label="客户" prop="clientAbbreviation" />
+        <el-table-column align="center" label="实施点" prop="pointPositionName" />
+        <el-table-column align="center" label="地址" prop="address" />
+        <el-table-column align="center" label="实施类型" prop="type" />
         <el-table-column
           align="center"
-          label="是否显示"
-          prop="show"
-          width="160"
-        >
-          <template v-slot="{ row }">
-            <el-switch
-              v-permission="'global:role:show'"
-              @change="showHandle(row)"
-              v-model="row.show"
-              :active-value="1"
-              :inactive-value="0"
-            />
-          </template>
-        </el-table-column>
+          label="实施点人数"
+          prop="peopleNumbers"
+        />
+        <el-table-column
+          align="center"
+          label="预计实施时间"
+          prop="scheduledTime"
+        />
+        <el-table-column align="center" label="实施人员" prop="implementerName" />
+        <el-table-column align="center" label="ip规划" prop="ip" />
+        <el-table-column align="center" label="设备别名" prop="cpeName" />
+        <el-table-column align="center" label="实施状态" prop="status" />
+        <el-table-column align="center" label="实施资料链接" prop="dataLink" />
+        <el-table-column align="center" label="备注" prop="remark" />
         <el-table-column
           align="center"
           label="开始时间"
-          prop="created_at"
+          prop="startTime"
           width="160"
         />
         <el-table-column
           align="center"
           label="结束时间"
-          prop="updated_at"
+          prop="endTime"
           width="160"
         />
         <el-table-column
@@ -104,6 +106,8 @@ import { clearJson } from "@/utils";
 
 import { globalPageApi, globalDeleteApi, globalSetShowApi } from "@/api/role";
 
+import { getAllProject } from "@/api/project";
+
 export default defineComponent({
   components: { ContainerSidebar, EnterpriseSidebar, AddEdit },
   setup() {
@@ -122,7 +126,13 @@ export default defineComponent({
       },
       list: [],
       selection: [],
+      project: [],
     });
+
+    const handleGetAllProject = async () => {
+      const p = await getAllProject();
+      data.project = JSON.parse(p.data);
+    };
 
     const getList = () => {
       if (data.active) {
@@ -231,6 +241,7 @@ export default defineComponent({
       pageChangeHandle,
       changeHandle,
       clearJson,
+      handleGetAllProject
     };
   },
 });
