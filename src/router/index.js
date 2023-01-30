@@ -33,7 +33,7 @@ const main = {
       next({ name: 'login', replace: true })
     } else {
       await store.dispatch('administrator/getAdministrator')
-      await store.dispatch('enterprise/getEnterprise')
+      // await store.dispatch('enterprise/getEnterprise')
       if (to.name === 'redirect') {
         const exists = main.children.filter(item => item.name !== 'redirect') || []
         const name = exists.length ? exists[0].name : '404'

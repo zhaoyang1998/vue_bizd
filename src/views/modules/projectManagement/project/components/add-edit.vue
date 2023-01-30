@@ -12,11 +12,15 @@
       v-loading="loading"
       :model="project"
       :rules="rules"
+      label-width="auto"
       ref="refForm"
       @keyup.enter="submit()"
       label-position="left"
+      require-asterisk-position="right"
+    
     >
-      <el-form-item label="单位名称 必填" prop="pointPositionName">
+      <el-form-item label="单位名称 必填" 
+                    prop="pointPositionName">
         <el-input v-model="project.pointPositionName" placeholder="单位名称" />
       </el-form-item>
       <el-form-item label="所属客户ID" prop="clientId">
@@ -51,18 +55,20 @@
       </el-form-item>
       <el-form-item label="预计实施时间">
         <el-col :span="11">
-          <!-- v-model="project.cheduledDate" -->
+          
           <el-date-picker
-            type="date"
-            placeholder="请选择日期"
+            type="datetime"
+            v-model="project.scheduledTime"
+            value-format="YYYY-MM-DD HH:mm:ss"
+            placeholder="请选择时间"
             style="width: 100%"
           />
         </el-col>
-        <el-col :span="2"> </el-col>
+        <!-- <el-col :span="2"> </el-col>
         <el-col :span="11">
-          <!-- v-model="project.cheduledTime" -->
-          <el-time-picker placeholder="请选择时间" style="width: 100%" />
-        </el-col>
+          
+          <el-time-picker v-model="project.scheduledTime" placeholder="请选择时间" style="width: 100%" />
+        </el-col> -->
       </el-form-item>
       <el-form-item label="实施人员" prop="implementerId">
         <el-select
@@ -92,7 +98,7 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="visible = false">取消</el-button>
-        <el-button v-repeat type="primary" @click="handleAddPointPosition()"
+        <el-button type="primary" @click="handleAddPointPosition()"
           >确认</el-button
         >
       </span>
@@ -155,13 +161,14 @@ export default defineComponent({
     const handleAddPointPosition = async () => {
       const addProject = data.project;
       await addPointPosition(addProject);
+      data.visible=false
     };
 
     const rules = reactive(
       (function () {
         return {
           pointPositionName: [
-            { required: true, message: "请输入单位名称", trigger: "blur" },
+            { required: true, message: "请输入单位名称", trigger: "blur"},
           ],
           address: [
             { required: true, message: "请输入地址", trigger: "blur" },
@@ -182,37 +189,13 @@ export default defineComponent({
       return reuslt;
     });
                                                                                                                                  
-    const getEnterpriseMenu = async () => {
-      const r = await globalSelectListApi(data.form.enterprise_id);
-      if (r) {
-        const list = [
-          {
-            id: 0,
-            name_cn: "一级菜单",
-            name_en: "First level menu",
-            parent_id: 0,
-            children: r.data,
-          },
-        ];
-        data.menus = list;
-      }
-    };
+    
 
     const init = async (enterpriseId, id) => {
       data.visible = true;
       data.loading = false;
       data.form.enterprise_id = enterpriseId;
       data.form.id = id;
-
-      await getEnterpriseMenu();
-      if (id) {
-        const r = await globalInfoApi(id);
-        if (r) {
-          data.form.name = r.data.name;
-          data.form.remark = r.data.remark;
-          data.form.enterprise_menu_ids = r.data.enterprise_menu_ids;
-        }
-      }
 
       nextTick(() => {
         data.loading = false;

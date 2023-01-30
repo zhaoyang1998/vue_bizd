@@ -28,7 +28,7 @@ export default defineComponent({
   setup() {
     const store = useStore()
 
-    const enterprise ={name:'目录',logo:'test' }
+    const enterprise ={name:'目录',logo:'https://www.logodesign.net/images/home-page-logo-03.png' }
 
     const collapse = computed(() => store.state.menu.collapse)
 
