@@ -6,15 +6,14 @@ import 'nprogress/nprogress.css'
 import { parseStr2Date } from '@/utils'
 
 let refresh = true
-
 const constant = [
   { path: '/', redirect: { name: 'login' }, meta: { title_cn: '重定向', title_en: 'Redirect' } },
   { path: '/login', name: 'login', component: () => import('@/views/constant/login.vue'), meta: { title_cn: '登录', title_en: 'Login' } },
+ 
   { path: '/401', name: '401', component: () => import('@/views/constant/401.vue'), meta: { title_cn: '401', title_en: '401' } },
   { path: '/404', name: '404', component: () => import('@/views/constant/404.vue'), meta: { title_cn: '404', title_en: '404' } },
   { path: '/500', name: '500', component: () => import('@/views/constant/500.vue'), meta: { title_cn: '500', title_en: '500' } },
 ]
-
 const main = {
   path: '/layout',
   name: 'layout',
@@ -25,6 +24,7 @@ const main = {
     { path: '/redirect', name: 'redirect', component: defineComponent({ render: () => h('div') }), meta: {} }
   ],
   async beforeEnter(to, _from, next) {
+    
     const token = store.getters['administrator/tokenVal']
     if (!token || !/\S/u.test(token)) {
       // eslint-disable-next-line no-use-before-define
@@ -177,6 +177,7 @@ router.beforeEach(async (to, _from, next) => {
     }
     refresh = false
     const menus = store.state.menu.menus
+ 
     if (!menus || menus.length === 0) {
       store.dispatch('menu/setGet', false)
       next({ name: '404', replace: true })
@@ -191,6 +192,16 @@ router.afterEach((_to, _from) => {
   NProgress.done()
 })
 
+
+//第一次登录加载路由
+function firstRouter(){
+  const menus = store.state.menu.menus
+  addRoutes(menus)
+}
+firstRouter()
+
+
+
 // 添加异常处理
 const originalPush = router.push
 router.push = (to) => {
@@ -201,5 +212,6 @@ router.push = (to) => {
     return originalPush({ name: '404' })
   }
 }
+
 
 export default router

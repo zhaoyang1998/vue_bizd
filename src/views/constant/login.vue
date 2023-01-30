@@ -121,42 +121,42 @@ export default defineComponent({
       })
     }
 
-    /**
-     * @description: 提示
-     * @param {*}
-     * @return {*}
-     * @author: gumingchen
-     */
-    const notifyHandle = () => {
-      const message = `
-        <div class="login-notify-content">
-          <div class="tip">演示环境，部分权限暂不开放</div>
-          因系统禁止多点在线 所以会遇到token失效、退出登录的情况属，可以尝试更换帐号登录！
-          <div class="margin_t-10">
-            <p>总后台帐号：</p>
-            <b>demo1，demo2，demo3，demo4</b>
-          </div>
-          <div class="margin-10-n">
-            <p>企业超管帐号：</p>
-            <b>admin1，admin2，admin3，admin4</b>
-          </div>
-          <p>所有帐号的密码统一为：<b>superadmin</b></p>
-        </div>
-      `
-      ElNotification({
-        title: '提示',
-        dangerouslyUseHTMLString: true,
-        message: message,
-        type: 'warning',
-        position: 'bottom-right',
-        duration: 0,
-        customClass: 'login-notify'
-      })
-    }
+    // /**
+    //  * @description: 提示
+    //  * @param {*}
+    //  * @return {*}
+    //  * @author: gumingchen
+    //  */
+    // const notifyHandle = () => {
+    //   const message = `
+    //     <div class="login-notify-content">
+    //       <div class="tip">演示环境，部分权限暂不开放</div>
+    //       因系统禁止多点在线 所以会遇到token失效、退出登录的情况属，可以尝试更换帐号登录！
+    //       <div class="margin_t-10">
+    //         <p>总后台帐号：</p>
+    //         <b>demo1，demo2，demo3，demo4</b>
+    //       </div>
+    //       <div class="margin-10-n">
+    //         <p>企业超管帐号：</p>
+    //         <b>admin1，admin2，admin3，admin4</b>
+    //       </div>
+    //       <p>所有帐号的密码统一为：<b>superadmin</b></p>
+    //     </div>
+    //   `
+    //   ElNotification({
+    //     title: '提示',
+    //     dangerouslyUseHTMLString: true,
+    //     message: message,
+    //     type: 'warning',
+    //     position: 'bottom-right',
+    //     duration: 0,
+    //     customClass: 'login-notify'
+    //   })
+    // }
 
     onBeforeMount(() => {
       getCaptcha()
-      notifyHandle()
+      // notifyHandle()
     })
 
     return {

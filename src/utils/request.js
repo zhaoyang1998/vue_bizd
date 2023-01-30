@@ -14,6 +14,8 @@ import Prompt from '@/utils/prompt'
  * @return {*}
  * @author: gumingchen
  */
+
+//赵阳备注 提示是在这里控制
 const prompt = message => {
   new Prompt().warning({
     message: message,
