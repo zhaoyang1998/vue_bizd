@@ -12,3 +12,17 @@ import service from '@/utils/request'
     method: 'post'
   })
 }
+
+/**
+ * @description: 根据用户类型获取用户
+ * @param {*}
+ * @return {*}
+ * @author: longyuyu
+ */
+export function getUsersByType(param) {
+  return service({
+    url: `/user/getUsersByType`,
+    method: 'post',
+    data: param
+  })
+}

@@ -27,7 +27,7 @@ import Visits from './components/visits.vue'
 import Advertisement from './components/advertisement.vue'
 
 export default defineComponent({
-  components: { ContainerCustom, Introduction, Project, Interacted, Visits, Advertisement },
+  components: { ContainerCustom, Introduction, Project, Interacted, Advertisement },
   setup() {
     const data = reactive({
     })

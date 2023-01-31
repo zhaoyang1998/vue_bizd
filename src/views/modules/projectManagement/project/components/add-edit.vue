@@ -23,7 +23,7 @@
                     prop="pointPositionName">
         <el-input v-model="project.pointPositionName" placeholder="单位名称" />
       </el-form-item>
-      <el-form-item label="所属客户ID" prop="clientId">
+      <el-form-item label="所属客户" prop="clientId">
         <el-select
           v-model="project.clientId"
           clearable
@@ -122,6 +122,7 @@ import { globalSelectListApi } from "@/api/enterprise-menu";
 import { globalInfoApi, globalAddApi, globalEditApi } from "@/api/role";
 
 import { addPointPosition } from "@/api/project";
+
 
 export default defineComponent({
   emits: ["refresh"],

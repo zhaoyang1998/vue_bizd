@@ -27,9 +27,22 @@
         border
       >
         <el-table-column fixed align="center" type="selection" width="50" />
-        <el-table-column align="center" label="创建者" prop="userName" width="80" />
-        <el-table-column align="center" label="客户" prop="clientAbbreviation" />
-        <el-table-column align="center" label="实施点" prop="pointPositionName" />
+        <el-table-column
+          align="center"
+          label="创建者"
+          prop="userName"
+          width="80"
+        />
+        <el-table-column
+          align="center"
+          label="客户"
+          prop="clientAbbreviation"
+        />
+        <el-table-column
+          align="center"
+          label="实施点"
+          prop="pointPositionName"
+        />
         <el-table-column align="center" label="地址" prop="address" />
         <el-table-column align="center" label="实施类型" prop="type" />
         <el-table-column
@@ -42,7 +55,11 @@
           label="预计实施时间"
           prop="scheduledTime"
         />
-        <el-table-column align="center" label="实施人员" prop="implementerName" />
+        <el-table-column
+          align="center"
+          label="实施人员"
+          prop="implementerName"
+        />
         <el-table-column align="center" label="ip规划" prop="ip" />
         <el-table-column align="center" label="设备别名" prop="cpeName" />
         <el-table-column align="center" label="实施状态" prop="status" />
@@ -94,7 +111,14 @@
 </template>
 
 <script>
-import { defineComponent, reactive, ref, toRefs, nextTick } from "vue";
+import {
+  defineComponent,
+  reactive,
+  ref,
+  toRefs,
+  nextTick,
+  onMounted,
+} from "vue";
 
 import { ElMessage, ElMessageBox } from "element-plus";
 import ContainerSidebar from "@/components/container-sidebar/index.vue";
@@ -225,6 +249,10 @@ export default defineComponent({
       reacquireHandle();
     };
 
+    onMounted(async () => {
+      await handleGetAllProject();
+    });
+
     return {
       refContainerSidebar,
       refForm,
@@ -241,7 +269,7 @@ export default defineComponent({
       pageChangeHandle,
       changeHandle,
       clearJson,
-      handleGetAllProject
+      handleGetAllProject,
     };
   },
 });
