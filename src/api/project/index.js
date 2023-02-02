@@ -6,10 +6,11 @@ import service from '@/utils/request'
  * @return {*}
  * @author: longyuyu
  */
-export function getAllProject() {
+export function getAllProject(params) {
   return service({
     url: `/pointPosition/getPointPosition`,
-    method: 'post'
+    method: 'post',
+    data: params
   })
 }
 
@@ -26,6 +27,6 @@ export function addPointPosition(params) {
       'Content-Type': 'application/json'
     },
     method: 'post',
-    data:  params 
+    data: params
   })
 }

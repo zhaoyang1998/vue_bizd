@@ -13,7 +13,11 @@
           <el-button v-repeat @click="clearJson(form), reacquireHandle()"
             >重置</el-button
           >
-          <el-button type="primary" @click="addEditHandle()">新增</el-button>
+          <el-button
+            type="primary"
+            @click="addEditHandle(), handleGetUserByType()"
+            >新增</el-button
+          >
           <el-button type="danger" @click="deleteHandle()">批量删除</el-button>
         </el-form-item>
       </el-form>
@@ -105,7 +109,7 @@
       <AddEdit ref="refAddEdit" v-if="visible" @refresh="getList" />
     </template>
     <template #footer>
-      <Page :page="page" @change="pageChangeHandle" />
+      <Page :page="pages" @change="pageChangeHandle" />
     </template>
   </ContainerSidebar>
 </template>
@@ -126,11 +130,13 @@ import EnterpriseSidebar from "@/components/enterprise-sidebar/index.vue";
 import AddEdit from "./components/add-edit.vue";
 
 import usePage from "@/mixins/page";
+import usePages from "@/mixins/pages";
 import { clearJson } from "@/utils";
 
 import { globalPageApi, globalDeleteApi, globalSetShowApi } from "@/api/role";
 
 import { getAllProject } from "@/api/project";
+import { getUsersByType } from "@/api/user";
 
 export default defineComponent({
   components: { ContainerSidebar, EnterpriseSidebar, AddEdit },
@@ -139,8 +145,8 @@ export default defineComponent({
     const refForm = ref();
     const refTable = ref();
     const refAddEdit = ref();
-
     const { page } = usePage();
+    const { pages } = usePages();
     const data = reactive({
       active: "",
       loading: false,
@@ -153,9 +159,16 @@ export default defineComponent({
       project: [],
     });
 
-    const handleGetAllProject = async () => {
-      const p = await getAllProject();
-      data.project = JSON.parse(p.data);
+    const handleGetAllProject = async (params) => {
+      const project = await getAllProject(params);
+      data.project = JSON.parse(project.data);
+      pages.current = project.cur;
+      pages.total = project.total;
+    };
+
+    const handleGetUserByType = async () => {
+      const user = await getUsersByType();
+      console.log(user);
     };
 
     const getList = () => {
@@ -239,8 +252,13 @@ export default defineComponent({
     };
 
     const pageChangeHandle = (argPage) => {
-      page.current = argPage.current;
-      page.size = argPage.size;
+      pages.current = argPage.current;
+      pages.size = argPage.size;
+      const pagination = {
+        pageSize: pages.size,
+        pageNumber: pages.current,
+      };
+      handleGetAllProject(pagination);
       getList();
     };
 
@@ -259,6 +277,7 @@ export default defineComponent({
       refTable,
       refAddEdit,
       page,
+      pages,
       ...toRefs(data),
       getList,
       reacquireHandle,
@@ -270,6 +289,7 @@ export default defineComponent({
       changeHandle,
       clearJson,
       handleGetAllProject,
+      handleGetUserByType,
     };
   },
 });

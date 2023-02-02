@@ -6,7 +6,7 @@ import service from '@/utils/request'
  * @return {*}
  * @author: longyuyu
  */
- export function getAllUser() {
+export function getAllUser() {
   return service({
     url: `/user/getUsers`,
     method: 'post'
@@ -19,10 +19,9 @@ import service from '@/utils/request'
  * @return {*}
  * @author: longyuyu
  */
-export function getUsersByType(param) {
+export function getUsersByType() {
   return service({
-    url: `/user/getUsersByType`,
+    url: `/user/getUsersByType` + '?type=' + 1,
     method: 'post',
-    data: param
   })
 }

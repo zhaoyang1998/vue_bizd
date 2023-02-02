@@ -13,7 +13,11 @@
           <el-button v-repeat @click="clearJson(form), reacquireHandle()"
             >重置</el-button
           >
-          <el-button type="primary" @click="addEditHandle()">新增</el-button>
+          <el-button
+            type="primary"
+            @click="addEditHandle(), handleGetUserByType()"
+            >新增</el-button
+          >
           <el-button type="danger" @click="deleteHandle()">批量删除</el-button>
         </el-form-item>
       </el-form>
@@ -66,7 +70,14 @@
 </template>
 
 <script>
-import { defineComponent, reactive, ref, toRefs, nextTick } from "vue";
+import {
+  defineComponent,
+  reactive,
+  ref,
+  toRefs,
+  nextTick,
+  onMounted,
+} from "vue";
 
 import { ElMessage, ElMessageBox } from "element-plus";
 import ContainerSidebar from "@/components/container-sidebar/index.vue";
@@ -98,14 +109,13 @@ export default defineComponent({
       },
       list: [],
       selection: [],
-      user: []
+      user: [],
     });
-    
-    const handleGetAllUser = async() =>{
+
+    const handleGetAllUser = async () => {
       const u = await getAllUser();
       data.user = JSON.parse(u.data);
-      console.log(data.user);
-    }
+    };
 
     const getList = () => {
       if (data.active) {
@@ -198,6 +208,10 @@ export default defineComponent({
       reacquireHandle();
     };
 
+    onMounted(async () => {
+      await handleGetAllUser();
+    });
+
     return {
       refContainerSidebar,
       refForm,
@@ -214,7 +228,7 @@ export default defineComponent({
       pageChangeHandle,
       changeHandle,
       clearJson,
-      handleGetAllUser
+      handleGetAllUser,
     };
   },
 });
