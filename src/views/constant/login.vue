@@ -6,16 +6,16 @@
         :model="form"
         :rules="rules"
         @keyup.enter="submit()">
-        <el-form-item prop="username">
-          <el-input v-model="form.username" placeholder="账户" clearable>
+        <el-form-item prop="userName">
+          <el-input v-model="form.userName" placeholder="账户" clearable>
             <template #prefix>
               <Iconfont name="user" />
             </template>
           </el-input>
         </el-form-item>
-        <el-form-item prop="password">
+        <el-form-item prop="userPwd">
           <el-input
-            v-model="form.password"
+            v-model="form.userPwd"
             placeholder="密码"
             show-password
             clearable>
@@ -72,16 +72,16 @@ export default defineComponent({
       loading: false,
       captcha: '',
       form: {
-        username: '',
-        password: '',
+        userName: '',
+        userPwd: '',
         uuid: '',
         code: ''
       }
     })
     const rules = reactive(function() {
       return {
-        username: [{ required: true, message: '账户不能为空', trigger: 'blur' }],
-        password: [{ required: true, message: '密码不能为空', trigger: 'blur' }],
+        userName: [{ required: true, message: '账户不能为空', trigger: 'blur' }],
+        userPwd: [{ required: true, message: '密码不能为空', trigger: 'blur' }],
       }
     }())
 

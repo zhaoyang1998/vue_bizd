@@ -9,7 +9,7 @@
           <el-input v-model="form.name" placeholder="名称" clearable />
         </el-form-item>
         <el-form-item>
-          <el-button v-repeat @click="reacquireHandle()">搜索</el-button>
+          <el-button v-repeat @click="handleGetAllClient()">搜索</el-button>
           <el-button v-repeat @click="clearJson(form), reacquireHandle()"
             >重置</el-button
           >
@@ -22,48 +22,20 @@
       <el-table
         ref="refTable"
         v-loading="loading"
-        :data="list"
+        :data="client"
         @selection-change="selectionHandle"
         border
       >
         <el-table-column align="center" type="selection" width="50" />
-        <el-table-column align="center" label="创建者" prop="id" width="80" />
-        <el-table-column align="center" label="客户" prop="name" />
-        <el-table-column align="center" label="实施点" prop="remark" />
+        <el-table-column align="center" label="客户名称" prop="clientName" />
         <el-table-column
           align="center"
-          label="是否显示"
-          prop="show"
-          width="160"
-        >
-          <template v-slot="{ row }">
-            <el-switch
-              v-permission="'global:role:show'"
-              @change="showHandle(row)"
-              v-model="row.show"
-              :active-value="1"
-              :inactive-value="0"
-            />
-          </template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          label="开始时间"
-          prop="created_at"
-          width="160"
+          label="客户简称"
+          prop="clientAbbreviation"
         />
-        <el-table-column
-          align="center"
-          label="结束时间"
-          prop="updated_at"
-          width="160"
-        />
-        <el-table-column
-          align="center"
-          label="实施方案"
-          prop="updated_at"
-          width="160"
-        />
+        <el-table-column align="center" label="客户链接资料" prop="dataLink" />
+        <el-table-column align="center" label="联系人" prop="principalId" />
+        <el-table-column align="center" label="实施状态" prop="status" />
         <el-table-column align="center" label="操作" width="110" fixed="right">
           <template v-slot="{ row }">
             <el-button
@@ -110,6 +82,7 @@ import usePage from "@/mixins/page";
 import { clearJson } from "@/utils";
 
 import { globalPageApi, globalDeleteApi, globalSetShowApi } from "@/api/role";
+import { getAllClient } from "@/api/client";
 
 export default defineComponent({
   components: { ContainerSidebar, EnterpriseSidebar, AddEdit },
@@ -118,7 +91,6 @@ export default defineComponent({
     const refForm = ref();
     const refTable = ref();
     const refAddEdit = ref();
-
     const { page } = usePage();
     const data = reactive({
       active: "",
@@ -129,31 +101,23 @@ export default defineComponent({
       },
       list: [],
       selection: [],
+      client: [],
     });
+    const pagination = {
+      pageSize: page.size,
+      pageNumber: page.current,
+    };
 
-    const getList = () => {
-      if (data.active) {
-        const params = {
-          id: data.active,
-          ...data.form,
-          current: page.current,
-          size: page.size,
-        };
-        data.loading = true;
-        globalPageApi(params).then((r) => {
-          if (r) {
-            (data.list = r.data.list), (page.total = r.data.total);
-          }
-          nextTick(() => {
-            data.loading = false;
-          });
-        });
-      }
+    const handleGetAllClient = async (params) => {
+      const c = await getAllClient(params);
+      data.client = JSON.parse(c.data);
+      page.current = c.cur;
+      page.total = c.total;
+      console.log(page);
     };
 
     const reacquireHandle = () => {
       page.current = 1;
-      getList();
     };
 
     const addEditHandle = (id) => {
@@ -181,7 +145,6 @@ export default defineComponent({
                 message: "操作成功!",
                 type: "success",
               });
-              getList();
             }
           });
         })
@@ -214,13 +177,19 @@ export default defineComponent({
     const pageChangeHandle = (argPage) => {
       page.current = argPage.current;
       page.size = argPage.size;
-      getList();
+      pagination.pageNumber = page.current;
+      pagination.pageSize = page.size;
+      handleGetAllClient(pagination);
     };
 
     const changeHandle = (_row) => {
       refContainerSidebar.value.setScrollTop();
       reacquireHandle();
     };
+
+    onMounted(async () => {
+      await handleGetAllClient(pagination);
+    });
 
     return {
       refContainerSidebar,
@@ -229,7 +198,6 @@ export default defineComponent({
       refAddEdit,
       page,
       ...toRefs(data),
-      getList,
       reacquireHandle,
       addEditHandle,
       deleteHandle,
@@ -238,6 +206,7 @@ export default defineComponent({
       pageChangeHandle,
       changeHandle,
       clearJson,
+      handleGetAllClient,
     };
   },
 });

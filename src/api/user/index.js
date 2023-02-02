@@ -6,10 +6,11 @@ import service from '@/utils/request'
  * @return {*}
  * @author: longyuyu
  */
-export function getAllUser() {
+export function getAllUser(params) {
   return service({
     url: `/user/getUsers`,
-    method: 'post'
+    method: 'post',
+    data: params
   })
 }
 

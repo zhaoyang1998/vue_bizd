@@ -87,7 +87,7 @@ import AddEdit from "./components/add-edit.vue";
 import usePage from "@/mixins/page";
 import { clearJson } from "@/utils";
 
-import { globalPageApi, globalDeleteApi, globalSetShowApi } from "@/api/role";
+import { globalDeleteApi, globalSetShowApi } from "@/api/role";
 
 import { getAllUser } from "@/api/user";
 
@@ -111,35 +111,20 @@ export default defineComponent({
       selection: [],
       user: [],
     });
-
-    const handleGetAllUser = async () => {
-      const u = await getAllUser();
-      data.user = JSON.parse(u.data);
+    const pagination = {
+      pageSize: page.size,
+      pageNumber: page.current,
     };
 
-    const getList = () => {
-      if (data.active) {
-        const params = {
-          id: data.active,
-          ...data.form,
-          current: page.current,
-          size: page.size,
-        };
-        data.loading = true;
-        globalPageApi(params).then((r) => {
-          if (r) {
-            (data.list = r.data.list), (page.total = r.data.total);
-          }
-          nextTick(() => {
-            data.loading = false;
-          });
-        });
-      }
+    const handleGetAllUser = async (params) => {
+      const u = await getAllUser(params);
+      data.user = JSON.parse(u.data);
+      page.current = u.cur;
+      page.total = u.total;
     };
 
     const reacquireHandle = () => {
       page.current = 1;
-      getList();
     };
 
     const addEditHandle = (id) => {
@@ -167,7 +152,6 @@ export default defineComponent({
                 message: "操作成功!",
                 type: "success",
               });
-              getList();
             }
           });
         })
@@ -200,7 +184,9 @@ export default defineComponent({
     const pageChangeHandle = (argPage) => {
       page.current = argPage.current;
       page.size = argPage.size;
-      getList();
+      pagination.pageNumber = page.current;
+      pagination.pageSize = page.size;
+      handleGetAllUser(pagination);
     };
 
     const changeHandle = (_row) => {
@@ -209,7 +195,7 @@ export default defineComponent({
     };
 
     onMounted(async () => {
-      await handleGetAllUser();
+      await handleGetAllUser(pagination);
     });
 
     return {
@@ -218,8 +204,8 @@ export default defineComponent({
       refTable,
       refAddEdit,
       page,
+      pagination,
       ...toRefs(data),
-      getList,
       reacquireHandle,
       addEditHandle,
       deleteHandle,

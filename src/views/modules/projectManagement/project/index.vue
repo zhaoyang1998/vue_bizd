@@ -109,7 +109,7 @@
       <AddEdit ref="refAddEdit" v-if="visible" @refresh="getList" />
     </template>
     <template #footer>
-      <Page :page="pages" @change="pageChangeHandle" />
+      <Page :page="page" @change="pageChangeHandle" />
     </template>
   </ContainerSidebar>
 </template>
@@ -128,12 +128,10 @@ import { ElMessage, ElMessageBox } from "element-plus";
 import ContainerSidebar from "@/components/container-sidebar/index.vue";
 import EnterpriseSidebar from "@/components/enterprise-sidebar/index.vue";
 import AddEdit from "./components/add-edit.vue";
-
 import usePage from "@/mixins/page";
-import usePages from "@/mixins/pages";
 import { clearJson } from "@/utils";
 
-import { globalPageApi, globalDeleteApi, globalSetShowApi } from "@/api/role";
+import { globalDeleteApi, globalSetShowApi } from "@/api/role";
 
 import { getAllProject } from "@/api/project";
 import { getUsersByType } from "@/api/user";
@@ -146,7 +144,6 @@ export default defineComponent({
     const refTable = ref();
     const refAddEdit = ref();
     const { page } = usePage();
-    const { pages } = usePages();
     const data = reactive({
       active: "",
       loading: false,
@@ -158,12 +155,16 @@ export default defineComponent({
       selection: [],
       project: [],
     });
+    const pagination = reactive({
+      pageSize: page.size,
+      pageNumber: page.current,
+    });
 
     const handleGetAllProject = async (params) => {
-      const project = await getAllProject(params);
-      data.project = JSON.parse(project.data);
-      pages.current = project.cur;
-      pages.total = project.total;
+      const p = await getAllProject(params);
+      data.project = JSON.parse(p.data);
+      page.current = p.cur;
+      page.total = p.total;
     };
 
     const handleGetUserByType = async () => {
@@ -171,29 +172,8 @@ export default defineComponent({
       console.log(user);
     };
 
-    const getList = () => {
-      if (data.active) {
-        const params = {
-          id: data.active,
-          ...data.form,
-          current: page.current,
-          size: page.size,
-        };
-        data.loading = true;
-        globalPageApi(params).then((r) => {
-          if (r) {
-            (data.list = r.data.list), (page.total = r.data.total);
-          }
-          nextTick(() => {
-            data.loading = false;
-          });
-        });
-      }
-    };
-
     const reacquireHandle = () => {
       page.current = 1;
-      getList();
     };
 
     const addEditHandle = (id) => {
@@ -221,7 +201,6 @@ export default defineComponent({
                 message: "操作成功!",
                 type: "success",
               });
-              getList();
             }
           });
         })
@@ -250,16 +229,12 @@ export default defineComponent({
     const selectionHandle = (val) => {
       data.selection = val;
     };
-
     const pageChangeHandle = (argPage) => {
-      pages.current = argPage.current;
-      pages.size = argPage.size;
-      const pagination = {
-        pageSize: pages.size,
-        pageNumber: pages.current,
-      };
+      page.current = argPage.current;
+      page.size = argPage.size;
+      pagination.pageNumber = page.current;
+      pagination.pageSize = page.size;
       handleGetAllProject(pagination);
-      getList();
     };
 
     const changeHandle = (_row) => {
@@ -268,8 +243,8 @@ export default defineComponent({
     };
 
     onMounted(async () => {
-      await handleGetAllProject();
-    });
+      await handleGetAllProject(pagination);
+    })
 
     return {
       refContainerSidebar,
@@ -277,9 +252,7 @@ export default defineComponent({
       refTable,
       refAddEdit,
       page,
-      pages,
       ...toRefs(data),
-      getList,
       reacquireHandle,
       addEditHandle,
       deleteHandle,
