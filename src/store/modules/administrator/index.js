@@ -55,8 +55,8 @@ export default {
     async login({ commit }, params) {
       const r = await loginApi(params)
       if (r) {
-        setToken(JSON.stringify(r.token))
-        commit('SET_TOKEN', r.token)
+        setToken(JSON.stringify(r.data))
+        commit('SET_TOKEN', r.data)
       }
       return r
     },

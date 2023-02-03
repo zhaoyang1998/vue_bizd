@@ -6,8 +6,8 @@
         :model="form"
         :rules="rules"
         @keyup.enter="submit()">
-        <el-form-item prop="userName">
-          <el-input v-model="form.userName" placeholder="账户" clearable>
+        <el-form-item prop="userAccount">
+          <el-input v-model="form.userAccount" placeholder="账户" clearable>
             <template #prefix>
               <Iconfont name="user" />
             </template>
@@ -72,7 +72,7 @@ export default defineComponent({
       loading: false,
       captcha: '',
       form: {
-        userName: '',
+        userAccount: '',
         userPwd: '',
         uuid: '',
         code: ''
@@ -80,7 +80,7 @@ export default defineComponent({
     })
     const rules = reactive(function() {
       return {
-        userName: [{ required: true, message: '账户不能为空', trigger: 'blur' }],
+        userAccount: [{ required: true, message: '账户不能为空', trigger: 'blur' }],
         userPwd: [{ required: true, message: '密码不能为空', trigger: 'blur' }],
       }
     }())
