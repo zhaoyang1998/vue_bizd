@@ -106,7 +106,12 @@
           </template>
         </el-table-column>
       </el-table>
-      <AddEdit ref="refAddEdit" v-if="visible" @refresh="getList" />
+      <AddEdit
+        :user="user"
+        ref="refAddEdit"
+        v-if="visible"
+        @refresh="getList"
+      />
     </template>
     <template #footer>
       <Page :page="page" @change="pageChangeHandle" />
@@ -155,6 +160,7 @@ export default defineComponent({
       selection: [],
       project: [],
     });
+    const user = ref([]);
     const pagination = reactive({
       pageSize: page.size,
       pageNumber: page.current,
@@ -168,8 +174,8 @@ export default defineComponent({
     };
 
     const handleGetUserByType = async () => {
-      const user = await getUsersByType();
-      console.log(user);
+      const u = await getUsersByType();
+      user.value = JSON.parse(u.data);
     };
 
     const reacquireHandle = () => {
@@ -244,7 +250,7 @@ export default defineComponent({
 
     onMounted(async () => {
       await handleGetAllProject(pagination);
-    })
+    });
 
     return {
       refContainerSidebar,
@@ -252,6 +258,7 @@ export default defineComponent({
       refTable,
       refAddEdit,
       page,
+      user,
       ...toRefs(data),
       reacquireHandle,
       addEditHandle,

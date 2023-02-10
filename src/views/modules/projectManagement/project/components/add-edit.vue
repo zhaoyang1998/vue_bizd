@@ -17,10 +17,8 @@
       @keyup.enter="submit()"
       label-position="left"
       require-asterisk-position="right"
-    
     >
-      <el-form-item label="单位名称 必填" 
-                    prop="pointPositionName">
+      <el-form-item label="单位名称 必填" prop="pointPositionName">
         <el-input v-model="project.pointPositionName" placeholder="单位名称" />
       </el-form-item>
       <el-form-item label="所属客户" prop="clientId">
@@ -55,7 +53,6 @@
       </el-form-item>
       <el-form-item label="预计实施时间">
         <el-col :span="11">
-          
           <el-date-picker
             type="datetime"
             v-model="project.scheduledTime"
@@ -111,11 +108,13 @@ import {
   computed,
   defineComponent,
   nextTick,
+  onMounted,
   reactive,
   ref,
   toRefs,
+  toRef,
 } from "vue";
- 
+
 import { ElMessage } from "element-plus";
 
 import { globalSelectListApi } from "@/api/enterprise-menu";
@@ -123,13 +122,15 @@ import { globalInfoApi, globalAddApi, globalEditApi } from "@/api/role";
 
 import { addPointPosition } from "@/api/project";
 
-
 export default defineComponent({
   emits: ["refresh"],
-  setup(_props, { emit }) {
+  props: { user: Array },
+  setup(props, { emit }) {
+    // const userdata = toRef(props, "user");
+    console.log(props);
+
     const refForm = ref();
     const refCascader = ref();
-
     const data = reactive({
       loading: false,
       visible: false,
@@ -162,18 +163,16 @@ export default defineComponent({
     const handleAddPointPosition = async () => {
       const addProject = data.project;
       await addPointPosition(addProject);
-      data.visible=false
+      data.visible = false;
     };
 
     const rules = reactive(
       (function () {
         return {
           pointPositionName: [
-            { required: true, message: "请输入单位名称", trigger: "blur"},
+            { required: true, message: "请输入单位名称", trigger: "blur" },
           ],
-          address: [
-            { required: true, message: "请输入地址", trigger: "blur" },
-          ],
+          address: [{ required: true, message: "请输入地址", trigger: "blur" }],
         };
       })()
     );
@@ -189,8 +188,6 @@ export default defineComponent({
       };
       return reuslt;
     });
-                                                                                                                                 
-    
 
     const init = async (enterpriseId, id) => {
       data.visible = true;
