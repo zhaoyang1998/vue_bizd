@@ -1,46 +1,45 @@
 <template>
   <div class="panel padding-15">
-    <div class="panel-title margin_b-10 font-size-18">广告</div>
+    <div class="panel-title margin_b-10 font-size-18">实施效率</div>
     <div class="panel-content">
       <div class="flex-box text-align-center">
-        <div class="flex-item_f-1" v-for="(item, index) in images" :key="index">
-          <p class="font-size-12">{{item.label}}</p>
-          <el-image
-            class="height-100"
-            :src="item.url"
-            preview-teleported
-            :preview-src-list="[item.url]" />
-        </div>
+        <div
+          class="panel-content flex-item_f-1"
+          id="contentEfficiency"
+          style="width: 100%; height: 400%"
+        ></div>
       </div>
     </div>
   </div>
 </template>
 
 <script >
-import { defineComponent, reactive, toRefs } from 'vue'
-
+import { defineComponent, reactive, toRefs, onMounted } from "vue";
+import * as echarts from "echarts";
 export default defineComponent({
-  setup() {
-    const data = reactive({
-      images: [
-        {
-          label: '支付宝扫码领红包',
-          url: 'http://oss.gumingchen.icu/image/red-envelopes.jpg'
-        }
-      ]
-    })
-
+  props: {
+    option: {},
+  },
+  setup(props) {
+    const showcontentEfficiency = () => {
+      const mCharts = echarts.init(
+        document.getElementById("contentEfficiency")
+      );
+      mCharts.setOption(props.option);
+    };
+    onMounted(async () => {
+      await showcontentEfficiency();
+    });
     return {
-      ...toRefs(data)
-    }
-  }
-})
+      showcontentEfficiency,
+    };
+  },
+});
 </script>
 
 <style lang="scss" scoped>
 .panel {
   height: fit-content;
-  min-width: 400px;
   border-radius: var(--el-border-radius-base);
   background-color: var(--gl-content-panel-background-color);
   &-title {
@@ -53,7 +52,6 @@ export default defineComponent({
     p {
       color: var(--el-text-color-placeholder);
     }
-
   }
 }
 </style>

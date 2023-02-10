@@ -1,40 +1,36 @@
 <template>
   <div class="panel padding-15">
-    <div class="panel-title margin_b-10 font-size-18">简介</div>
+    <div class="panel-title margin_b-10 font-size-18">总实施数据</div>
     <div class="panel-content text-align-center">
-      <el-image :src="logo" class="height-100 width-100" />
-      <h2>欢迎体验 vue3-element-plus-admin</h2>
-      <div class="text margin_b-10 font-size-14 text-align-left" v-for="(item, index) in texts" :key="index">{{ item }}</div>
-      <el-button type="primary" @click="documentHandle()">文档</el-button>
+      <div
+        class="panel-content flex-item_f-1"
+        id="contentTotal"
+        style="width: 100%; height: 300%"
+      ></div>
     </div>
   </div>
 </template>
 
 <script >
-import { defineComponent, reactive, toRefs } from 'vue'
-
+import { defineComponent, onMounted } from "vue";
+import * as echarts from "echarts";
 export default defineComponent({
-  setup() {
-    const data = reactive({
-      logo: 'http://oss.gumingchen.icu/image/slipper.jpeg',
-      document: 'http://admin.gumingchen.icu/doc/',
-      texts: [
-        'Java + Vue 有很多优秀的后台管理系统，但是为了可以高效的开发后台权限管理系统，作者就自己开发出 vue3-element-plus-admin。',
-        'vue3-element-plus-admin 是一个基于 Vue3 + Element-plus + Java 的多企业后台权限管理系统，提供了完善的权限体系，让开发者把注意力集中到具体业务当中，降低开发成本，提高项目效率。',
-        '可以用于网站管理后台、SAAS、CMS、CRM、OA、ERP等，企业和个人都可以免费使用。欢迎提交PR（需求），若开发中遇到问题可以上 Github 提 Issues。'
-      ]
-    })
-
-    const documentHandle = () => {
-      window.open(data.document)
-    }
-
+  props: {
+    option: {},
+  },
+  setup(props) {
+    const showContentTotal = () => {
+      const mCharts = echarts.init(document.getElementById("contentTotal"));
+      mCharts.setOption(props.option);
+    };
+    onMounted(async () => {
+      await showContentTotal();
+    });
     return {
-      ...toRefs(data),
-      documentHandle
-    }
-  }
-})
+      showContentTotal,
+    };
+  },
+});
 </script>
 
 <style lang="scss" scoped>
