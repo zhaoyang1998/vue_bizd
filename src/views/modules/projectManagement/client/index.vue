@@ -1,16 +1,20 @@
 <template>
   <ContainerSidebar ref="refContainerSidebar" :scroll="false">
     <template #sidebar>
-      <EnterpriseSidebar v-model="active" @change="changeHandle" />
+      <EnterpriseSidebar v-model="search.keyword" @change="changeHandle" />
     </template>
     <template #header>
       <el-form ref="refForm" :inline="true" @keyup.enter="reacquireHandle()">
         <el-form-item>
-          <el-input v-model="form.name" placeholder="名称" clearable />
+          <el-input
+            v-model="search.keyword"
+            placeholder="客户名称/简称"
+            clearable
+          />
         </el-form-item>
         <el-form-item>
-          <el-button v-repeat @click="handleGetAllClient()">搜索</el-button>
-          <el-button v-repeat @click="clearJson(form), reacquireHandle()"
+          <el-button v-repeat @click="searchClient()">搜索</el-button>
+          <el-button v-repeat @click="clearJson(search), reacquireHandle()"
             >重置</el-button
           >
           <el-button type="primary" @click="addEditHandle()">新增</el-button>
@@ -34,28 +38,26 @@
           prop="clientAbbreviation"
         />
         <el-table-column align="center" label="客户链接资料" prop="dataLink" />
-        <el-table-column align="center" label="联系人" prop="principalId" />
-        <el-table-column align="center" label="实施状态" prop="status" />
+        <el-table-column align="center" label="负责人" prop="principalName" />
+        <el-table-column
+          align="center"
+          label="canvas账号"
+          prop="canvasAccount"
+        />
+        <el-table-column align="center" label="canvas密码" prop="canvasPwd" />
+        <el-table-column align="center" label="状态" prop="statusName" />
         <el-table-column align="center" label="操作" width="110" fixed="right">
           <template v-slot="{ row }">
-            <el-button
-              v-permission="'global:role:update'"
-              type="primary"
-              link
-              @click="addEditHandle(row.id)"
+            <el-button type="primary" link @click="addEditHandle(row)"
               >编辑</el-button
             >
-            <el-button
-              v-permission="'global:role:delete'"
-              type="danger"
-              link
-              @click="deleteHandle(row.id)"
+            <el-button type="danger" link @click="deleteHandle(row.clientId)"
               >删除</el-button
             >
           </template>
         </el-table-column>
       </el-table>
-      <AddEdit ref="refAddEdit" v-if="visible" @refresh="getList" />
+      <AddEdit ref="refAddEdit" v-if="visible" @refresh="handleGetAllClient" />
     </template>
     <template #footer>
       <Page :page="page" @change="pageChangeHandle" />
@@ -82,7 +84,7 @@ import usePage from "@/mixins/page";
 import { clearJson } from "@/utils";
 
 import { globalPageApi, globalDeleteApi, globalSetShowApi } from "@/api/role";
-import { getAllClient } from "@/api/client";
+import { getAllClient, getClientsByKeyword, delClient } from "@/api/client";
 
 export default defineComponent({
   components: { ContainerSidebar, EnterpriseSidebar, AddEdit },
@@ -93,15 +95,18 @@ export default defineComponent({
     const refAddEdit = ref();
     const { page } = usePage();
     const data = reactive({
-      active: "",
       loading: false,
       visible: false,
       form: {
         name: "",
       },
-      list: [],
       selection: [],
       client: [],
+      search: {
+        pageSize: page.size,
+        pageNumber: page.current,
+        keyword: null,
+      },
     });
     const pagination = {
       pageSize: page.size,
@@ -113,22 +118,32 @@ export default defineComponent({
       data.client = JSON.parse(c.data);
       page.current = c.cur;
       page.total = c.total;
-      console.log(page);
+    };
+
+    const searchClient = async () => {
+      const search = data.search;
+      search.pageSize = pagination.pageSize;
+      search.pageNumber = pagination.pageNumber;
+      const c = await getClientsByKeyword(search);
+      data.client = JSON.parse(c.data);
+      page.current = c.cur;
+      page.total = c.total;
     };
 
     const reacquireHandle = () => {
-      page.current = 1;
+      pagination.pageNumber = 1;
+      handleGetAllClient(pagination);
     };
 
     const addEditHandle = (id) => {
       data.visible = true;
       nextTick(() => {
-        refAddEdit.value.init(data.active, id);
+        refAddEdit.value.init(id);
       });
     };
 
     const deleteHandle = (id) => {
-      const ids = id ? [id] : data.selection.map((item) => item.id);
+      const ids = id ? [id] : data.selection.map((item) => item.clientId);
       ElMessageBox.confirm(
         `确定对[id=${ids.join(",")}]进行[${id ? "删除" : "批量删除"}]操作?`,
         "提示",
@@ -139,14 +154,18 @@ export default defineComponent({
         }
       )
         .then(() => {
-          globalDeleteApi({ keys: ids }).then((r) => {
-            if (r) {
-              ElMessage({
-                message: "操作成功!",
-                type: "success",
-              });
-            }
-          });
+          delClient({ keys: ids })
+            .then((r) => {
+              if (r) {
+                ElMessage({
+                  message: "操作成功!",
+                  type: "success",
+                });
+              }
+            })
+            .then(() => {
+              handleGetAllClient();
+            });
         })
         .catch(() => {
           // to do something on canceled
@@ -171,6 +190,7 @@ export default defineComponent({
     };
 
     const selectionHandle = (val) => {
+      console.log(val);
       data.selection = val;
     };
 
@@ -179,7 +199,11 @@ export default defineComponent({
       page.size = argPage.size;
       pagination.pageNumber = page.current;
       pagination.pageSize = page.size;
-      handleGetAllClient(pagination);
+      if (data.search.keyword === "") {
+        handleGetAllClient(pagination);
+      } else {
+        searchClient();
+      }
     };
 
     const changeHandle = (_row) => {
@@ -207,6 +231,7 @@ export default defineComponent({
       changeHandle,
       clearJson,
       handleGetAllClient,
+      searchClient,
     };
   },
 });

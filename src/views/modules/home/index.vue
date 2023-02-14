@@ -17,6 +17,7 @@
           <Advertisement
             :option="efficiencyOption"
             class="margin-10 flex-item_f-1"
+            style="magrin: auto"
           />
         </div>
       </div>

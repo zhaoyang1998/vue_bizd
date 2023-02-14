@@ -1,6 +1,17 @@
 <template>
-  <div class="enterprise-sidebar-container height-full width-200 flex-box flex_d-column">
-    <el-input class="margin_b-10" v-model="form.name" @keyup.enter="reacquireHandle()">
+  <div
+    class="
+      enterprise-sidebar-container
+      height-full
+      width-200
+      flex-box flex_d-column
+    "
+  >
+    <el-input
+      class="margin_b-10"
+      v-model="form.name"
+      @keyup.enter="reacquireHandle()"
+    >
       <template #suffix>
         <Iconfont name="search" />
       </template>
@@ -12,8 +23,9 @@
           :class="{ 'is-active': item.id === value }"
           v-for="item in list"
           :key="item.id"
-          @click="clickHandle(item)">
-          {{item.name}}
+          @click="clickHandle(item)"
+        >
+          {{ item.name }}
         </li>
       </ul>
     </el-scrollbar>
@@ -25,47 +37,54 @@
       :total="page.total"
       @current-change="pageChangeHandle"
       small
-      hide-on-single-page />
+      hide-on-single-page
+    />
   </div>
 </template>
 
 <script>
-import { defineComponent, nextTick, onBeforeMount, reactive, toRefs } from 'vue'
+import {
+  defineComponent,
+  nextTick,
+  onBeforeMount,
+  reactive,
+  toRefs,
+} from "vue";
 
-import usePage from '@/mixins/page'
-import useModel from '@/mixins/model'
-import { UPDATE_MODEL_EVENT } from '@/utils/constant'
+import usePage from "@/mixins/page";
+import useModel from "@/mixins/model";
+import { UPDATE_MODEL_EVENT } from "@/utils/constant";
 
 // import { pageSimplifyApi } from '@/api/enterprise'
 
 export default defineComponent({
-  emits: ['change', UPDATE_MODEL_EVENT],
+  emits: ["change", UPDATE_MODEL_EVENT],
   props: {
     modelValue: {
       type: [String, Number],
-      required: true
-    }
+      required: true,
+    },
   },
   setup(props, { emit }) {
-    const value = useModel(props)
+    const value = useModel(props);
 
-    const { page } = usePage()
+    const { page } = usePage();
     const data = reactive({
       loading: false,
       form: {
-        name: '',
-        date: []
+        name: "",
+        date: [],
       },
-      list: []
-    })
+      list: [],
+    });
 
     const getList = () => {
       const params = {
         name: data.form.name,
         current: page.current,
-        size: page.size
-      }
-      data.loading = true
+        size: page.size,
+      };
+      data.loading = true;
       // pageSimplifyApi(params).then(r => {
       //   if (r) {
       //     data.list = r.data.list
@@ -73,26 +92,26 @@ export default defineComponent({
       //   }
       //   nextTick(() => { data.loading = false })
       // })
-    }
+    };
 
     const reacquireHandle = () => {
-      page.current = 1
-      getList()
-    }
+      page.current = 1;
+      getList();
+    };
 
     const clickHandle = (row) => {
-      value.value = row.id
-      emit('change', row)
-    }
+      value.value = row.id;
+      emit("change", row);
+    };
 
     const pageChangeHandle = (val) => {
-      page.current = val
-      getList()
-    }
+      page.current = val;
+      getList();
+    };
 
     onBeforeMount(() => {
-      getList()
-    })
+      getList();
+    });
 
     return {
       value,
@@ -100,10 +119,10 @@ export default defineComponent({
       ...toRefs(data),
       reacquireHandle,
       clickHandle,
-      pageChangeHandle
-    }
-  }
-})
+      pageChangeHandle,
+    };
+  },
+});
 </script>
 
 <style lang="scss" scoped>
@@ -113,13 +132,12 @@ export default defineComponent({
       margin-top: 10px;
     }
     li {
-
       &:hover {
-        color: var(--el-color-primary)
+        color: var(--el-color-primary);
       }
     }
     .is-active {
-      color: var(--el-color-primary)
+      color: var(--el-color-primary);
     }
   }
 }

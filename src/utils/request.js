@@ -132,6 +132,7 @@ service.interceptors.response.use(
   },
   error => {
     if (error && error.response) {
+      console.log(error.response)
       switch (error.response.status) {
         case 400:
           console.log('错误请求')

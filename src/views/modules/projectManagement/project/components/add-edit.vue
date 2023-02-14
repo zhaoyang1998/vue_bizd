@@ -127,8 +127,6 @@ export default defineComponent({
   props: { user: Array },
   setup(props, { emit }) {
     // const userdata = toRef(props, "user");
-    console.log(props);
-
     const refForm = ref();
     const refCascader = ref();
     const data = reactive({
