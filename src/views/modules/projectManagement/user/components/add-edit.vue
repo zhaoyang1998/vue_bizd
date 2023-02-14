@@ -1,137 +1,135 @@
 <template>
   <el-dialog
     width="450px"
-    :title="form.id ? '编辑' : '新增'"
+    :title="user.userId ? '编辑' : '新增'"
     v-model="visible"
     :close-on-click-modal="false"
     @closed="dialogClosedHandle"
     append-to-body
-    draggable>
+    draggable
+  >
     <el-form
       v-loading="loading"
-      :model="form"
+      :model="user"
       :rules="rules"
+      label-width="auto"
       ref="refForm"
       @keyup.enter="submit()"
-      label-position="top">
-      <el-form-item label="角色名称" prop="name">
-        <el-input
-          v-model="form.name"
-          placeholder="角色名称"
-          maxlength="20"
-          show-word-limit />
+      label-position="left"
+      require-asterisk-position="right"
+    >
+      <el-form-item label="用户名" prop="userName">
+        <el-input v-model="user.userName" placeholder="用户名" />
       </el-form-item>
-      <el-form-item label="备注" prop="remark">
-        <el-input
-          v-model="form.remark"
-          type="textarea"
-          placeholder="备注"
-          maxlength="100"
-          show-word-limit />
+      <el-form-item label="账号" prop="userAccount" v-if="!user.userId">
+        <el-input v-model="user.userAccount" placeholder="账号" />
       </el-form-item>
-      <el-form-item label="权限" prop="enterprise_menu_ids">
-        <el-cascader
-          class="width-full"
-          ref="refCascader"
-          v-model="form.enterprise_menu_ids"
-          :options="menus"
-          :props="cascaderProps"
-          :show-all-levels="false"
-          collapse-tags
-          collapse-tags-tooltip
-          clearable />
+      <el-form-item label="密码" prop="userPwd" v-if="!user.userId">
+        <el-input v-model="user.userPwd" placeholder="密码" type="password" />
+      </el-form-item>
+      <el-form-item label="再次输入密码" prop="userTmpPwd" v-if="!user.userId">
+        <el-input
+          v-model="user.userTmpPwd"
+          placeholder="再次输入密码"
+          type="password"
+        />
+      </el-form-item>
+      <el-form-item label="企业微信名称" prop="wxName">
+        <el-input v-model="user.wxName" placeholder="企业微信名" />
+      </el-form-item>
+      <el-form-item label="优先级" prop="priority">
+        <el-input v-model="user.priority" placeholder="优先级" />
+      </el-form-item>
+      <el-form-item label="人员类型" prop="type">
+        <el-select v-model="user.type" clearable placeholder="请选择人员类型">
+          <el-option label="交付" :value="1" />
+          <el-option label="项目经理" :value="2" />
+        </el-select>
       </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="visible = false">取消</el-button>
-        <el-button
-          v-repeat
-          type="primary"
-          @click="submit()">确认</el-button>
+        <el-button type="primary" @click="submit()">确认</el-button>
       </span>
     </template>
   </el-dialog>
 </template>
 
 <script>
-import { computed, defineComponent, nextTick, reactive, ref, toRefs } from 'vue'
+import { defineComponent, nextTick, reactive, ref, toRefs } from "vue";
 
-import { ElMessage } from 'element-plus'
-
-import { globalSelectListApi } from '@/api/enterprise-menu'
-import { globalInfoApi, globalAddApi, globalEditApi } from '@/api/role'
-
+import { ElMessage } from "element-plus";
+import { addUser, updateUser } from "@/api/user";
 export default defineComponent({
-  emits: ['refresh'],
-  setup(_props, { emit }) {
-    const refForm = ref()
-    const refCascader = ref()
-
+  emits: ["refresh"],
+  setup(props, { emit }) {
+    const refForm = ref();
     const data = reactive({
       loading: false,
       visible: false,
-      form: {
-        id: null,
-        name: '',
-        remark: '',
-        enterprise_menu_ids: [],
-        enterprise_id: ''
+      tmp: {},
+      user: {
+        userId: "",
+        userAccount: "",
+        userName: "",
+        userPwd: "",
+        userTmpPwd: "",
+        wxName: "",
+        type: "",
+        priority: "",
       },
-      menus: []
-    })
-
-    const rules = reactive(function() {
-      return {
-        name: [{ required: true, message: '请输入角色名称', trigger: 'blur' }],
-        enterprise_menu_ids: [{ type: 'array', required: true, message: '请选择权限', trigger: 'blur' }]
+    });
+    const rules = reactive(
+      (function () {
+        return {
+          userAccount: [
+            { required: true, message: "账号不能为空", trigger: "blur" },
+          ],
+          userName: [
+            { required: true, message: "用户名不能为空", trigger: "blur" },
+          ],
+          userPwd: [
+            { required: true, message: "密码不能为空", trigger: "blur" },
+          ],
+          wxName: [
+            {
+              required: true,
+              message: "企业微信名称不能为空",
+              trigger: "blur",
+            },
+          ],
+          userTmpPwd: [
+            {
+              required: true,
+              trigger: ["blur", "change"],
+              validator: (rule, value, callback) => {
+                if (value === "") {
+                  callback(new Error("请再次输入密码"));
+                } else if (value !== data.user.userPwd) {
+                  callback(new Error("密码不一致"));
+                } else {
+                  callback();
+                }
+              },
+            },
+          ],
+          type: [{ required: true, message: "人员类型", trigger: "blur" }],
+        };
+      })()
+    );
+    const init = async (user) => {
+      if (user) {
+        data.user = JSON.parse(JSON.stringify(user));
+      } else {
+        data.user = {};
       }
-    }())
-
-    const cascaderProps = computed(() => {
-      const reuslt = {
-        multiple: true,
-        emitPath: false,
-        checkStrictly: false,
-        value: 'id',
-        label: `name_cn`,
-        children: 'children'
-      }
-      return reuslt
-    })
-
-    const getEnterpriseMenu = async () => {
-      const r = await globalSelectListApi(data.form.enterprise_id)
-      if (r) {
-        const list = [{
-          id: 0,
-          name_cn: '一级菜单',
-          name_en: 'First level menu',
-          parent_id: 0,
-          children: r.data
-        }]
-        data.menus = list
-      }
-    }
-
-    const init = async (enterpriseId, id) => {
-      data.visible = true
-      data.loading = false
-      data.form.enterprise_id = enterpriseId
-      data.form.id = id
-
-      await getEnterpriseMenu()
-      if (id) {
-        const r = await globalInfoApi(id)
-        if (r) {
-          data.form.name = r.data.name
-          data.form.remark = r.data.remark
-          data.form.enterprise_menu_ids = r.data.enterprise_menu_ids
-        }
-      }
-
-      nextTick(() => { data.loading = false })
-    }
+      data.visible = true;
+      data.loading = false;
+      nextTick(() => {
+        data.loading = false;
+      });
+    };
 
     /**
      * @description: 表单验证提交
@@ -140,48 +138,41 @@ export default defineComponent({
      * @author: gumingchen
      */
     const submit = () => {
-      refForm.value.validate(async valid => {
+      refForm.value.validate(async (valid) => {
         if (valid) {
-          // 处理已选 菜单 权限
-          const checkedNodes = refCascader.value.getCheckedNodes(true)
-          const enterpriseMenuIds = []
-          checkedNodes.forEach(item => {
-            enterpriseMenuIds.push.apply(enterpriseMenuIds, item.pathValues)
-          })
-          data.form.enterprise_menu_ids = Array.from(new Set(enterpriseMenuIds)).filter(item => item !== 0)
-          const r = data.form.id ? await globalEditApi(data.form) : await globalAddApi(data.form)
+          const r = data.user.userId
+            ? await updateUser(data.user)
+            : await addUser(data.user);
           if (r) {
-            data.visible = false
+            data.visible = false;
             ElMessage({
-              message: '操作成功!',
-              type: 'success'
-            })
-            emit('refresh')
+              message: "操作成功!",
+              type: "success",
+            });
+            emit("refresh");
           }
         }
-      })
-    }
+      });
+    };
 
     /**
-   * @description: 弹窗关闭动画结束时的回调
-   * @param {*}
-   * @return {*}
-   * @author: gumingchen
-   */
+     * @description: 弹窗关闭动画结束时的回调
+     * @param {*}
+     * @return {*}
+     * @author: gumingchen
+     */
     const dialogClosedHandle = () => {
-      refForm.value.resetFields()
-    }
+      refForm.value.resetFields();
+    };
 
     return {
       refForm,
-      refCascader,
       ...toRefs(data),
       rules,
-      cascaderProps,
       init,
       submit,
-      dialogClosedHandle
-    }
-  }
-})
+      dialogClosedHandle,
+    };
+  },
+});
 </script>

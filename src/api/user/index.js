@@ -26,3 +26,35 @@ export function getUsersByType() {
     method: 'post',
   })
 }
+
+export function addUser(param) {
+  return service({
+    url: `/user/addUser`,
+    method: 'post',
+    data: param
+  })
+}
+
+export function updateUser(param) {
+  return service({
+    url: `/user/updateUser`,
+    method: 'post',
+    data: param
+  })
+}
+
+export function getUsersByKeyword(param) {
+  return service({
+    url: '/user/getUsersByKeyword',
+    method: 'post',
+    data: param
+  })
+}
+
+export function delUser(param) {
+  return service({
+    url: '/user/delUser',
+    method: 'post',
+    data: param
+  })
+}

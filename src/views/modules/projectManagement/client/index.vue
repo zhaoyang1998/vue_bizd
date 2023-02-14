@@ -83,7 +83,7 @@ import AddEdit from "./components/add-edit.vue";
 import usePage from "@/mixins/page";
 import { clearJson } from "@/utils";
 
-import { globalPageApi, globalDeleteApi, globalSetShowApi } from "@/api/role";
+import { globalSetShowApi } from "@/api/role";
 import { getAllClient, getClientsByKeyword, delClient } from "@/api/client";
 
 export default defineComponent({
@@ -97,9 +97,6 @@ export default defineComponent({
     const data = reactive({
       loading: false,
       visible: false,
-      form: {
-        name: "",
-      },
       selection: [],
       client: [],
       search: {
@@ -190,7 +187,6 @@ export default defineComponent({
     };
 
     const selectionHandle = (val) => {
-      console.log(val);
       data.selection = val;
     };
 

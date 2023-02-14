@@ -6,18 +6,18 @@
     <template #header>
       <el-form ref="refForm" :inline="true" @keyup.enter="reacquireHandle()">
         <el-form-item>
-          <el-input v-model="form.name" placeholder="名称" clearable />
+          <el-input
+            v-model="search.keyword"
+            placeholder="用户名\企业微信名"
+            clearable
+          />
         </el-form-item>
         <el-form-item>
-          <el-button v-repeat @click="handleGetAllUser()">搜索</el-button>
-          <el-button v-repeat @click="clearJson(form), reacquireHandle()"
+          <el-button v-repeat @click="searchUser()">搜索</el-button>
+          <el-button v-repeat @click="clearJson(search), reacquireHandle()"
             >重置</el-button
           >
-          <el-button
-            type="primary"
-            @click="addEditHandle(), handleGetUserByType()"
-            >新增</el-button
-          >
+          <el-button type="primary" @click="addEditHandle()">新增</el-button>
           <el-button type="danger" @click="deleteHandle()">批量删除</el-button>
         </el-form-item>
       </el-form>
@@ -31,37 +31,24 @@
         border
       >
         <el-table-column align="center" type="selection" width="50" />
-        <el-table-column align="center" label="用户名称" prop="userId" />
-        <el-table-column align="center" label="人员类型" prop="userName" />
-        <el-table-column align="center" label="微信名" prop="wxName" />
+        <el-table-column align="center" label="用户名" prop="userName" />
+        <el-table-column align="center" label="账号" prop="userAccount" />
+        <el-table-column align="center" label="人员类型" prop="typeName" />
+        <el-table-column align="center" label="企业微信" prop="wxName" />
         <el-table-column align="center" label="工作量" prop="currentWorkload" />
         <el-table-column align="center" label="优先级" prop="priority" />
-        <!-- <el-table-column align="center" label="TYPE" prop="type">
-          <template #default>
-            <div>{{scope.row.type ? "lalal" : "hehehe"}}</div>
-          </template>
-        </el-table-column> -->
-
-        <!-- <el-table-column align="center" label="操作" width="110" fixed="right">
+        <el-table-column align="center" label="操作" width="110" fixed="right">
           <template v-slot="{ row }">
-            <el-button
-              v-permission="'global:role:update'"
-              type="primary"
-              link
-              @click="addEditHandle(row.id)"
+            <el-button type="primary" link @click="addEditHandle(row)"
               >编辑</el-button
             >
-            <el-button
-              v-permission="'global:role:delete'"
-              type="danger"
-              link
-              @click="deleteHandle(row.id)"
+            <el-button type="danger" link @click="deleteHandle(row.userId)"
               >删除</el-button
             >
           </template>
-        </el-table-column> -->
+        </el-table-column>
       </el-table>
-      <AddEdit ref="refAddEdit" v-if="visible" @refresh="getList" />
+      <AddEdit ref="refAddEdit" v-if="visible" @refresh="handleGetAllUser()" />
     </template>
     <template #footer>
       <Page :page="page" @change="pageChangeHandle" />
@@ -87,9 +74,9 @@ import AddEdit from "./components/add-edit.vue";
 import usePage from "@/mixins/page";
 import { clearJson } from "@/utils";
 
-import { globalDeleteApi, globalSetShowApi } from "@/api/role";
+import { globalSetShowApi } from "@/api/role";
 
-import { getAllUser } from "@/api/user";
+import { delUser, getAllUser, getUsersByKeyword } from "@/api/user";
 
 export default defineComponent({
   components: { ContainerSidebar, EnterpriseSidebar, AddEdit },
@@ -104,12 +91,13 @@ export default defineComponent({
       active: "",
       loading: false,
       visible: false,
-      form: {
-        name: "",
-      },
-      list: [],
       selection: [],
       user: [],
+      search: {
+        pageSize: page.size,
+        pageNumber: page.current,
+        keyword: null,
+      },
     });
     const pagination = {
       pageSize: page.size,
@@ -122,20 +110,29 @@ export default defineComponent({
       page.current = u.cur;
       page.total = u.total;
     };
-
+    const searchUser = async () => {
+      const search = data.search;
+      search.pageSize = pagination.pageSize;
+      search.pageNumber = pagination.pageNumber;
+      const c = await getUsersByKeyword(search);
+      data.user = JSON.parse(c.data);
+      page.current = c.cur;
+      page.total = c.total;
+    };
     const reacquireHandle = () => {
-      page.current = 1;
+      pagination.pageNumber = 1;
+      handleGetAllUser(pagination);
     };
 
     const addEditHandle = (id) => {
       data.visible = true;
       nextTick(() => {
-        refAddEdit.value.init(data.active, id);
+        refAddEdit.value.init(id);
       });
     };
 
     const deleteHandle = (id) => {
-      const ids = id ? [id] : data.selection.map((item) => item.id);
+      const ids = id ? [id] : data.selection.map((item) => item.userId);
       ElMessageBox.confirm(
         `确定对[id=${ids.join(",")}]进行[${id ? "删除" : "批量删除"}]操作?`,
         "提示",
@@ -146,14 +143,18 @@ export default defineComponent({
         }
       )
         .then(() => {
-          globalDeleteApi({ keys: ids }).then((r) => {
-            if (r) {
-              ElMessage({
-                message: "操作成功!",
-                type: "success",
-              });
-            }
-          });
+          delUser({ keys: ids })
+            .then((r) => {
+              if (r) {
+                ElMessage({
+                  message: "操作成功!",
+                  type: "success",
+                });
+              }
+            })
+            .then(() => {
+              handleGetAllUser();
+            });
         })
         .catch(() => {
           // to do something on canceled
@@ -215,6 +216,7 @@ export default defineComponent({
       changeHandle,
       clearJson,
       handleGetAllUser,
+      searchUser,
     };
   },
 });
