@@ -76,7 +76,7 @@ export default defineComponent({
         name: '',
         remark: '',
         enterprise_menu_ids: [],
-        enterprise_id: ''
+        enterprise_id: "",
       },
       menus: []
     })
