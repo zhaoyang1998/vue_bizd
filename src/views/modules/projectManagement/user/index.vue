@@ -48,7 +48,7 @@
           </template>
         </el-table-column>
       </el-table>
-      <AddEdit ref="refAddEdit" v-if="visible" @refresh="handleGetAllUser()" />
+      <AddEdit ref="refAddEdit" v-if="visible" @refresh="reacquireHandle()" />
     </template>
     <template #footer>
       <Page :page="page" @change="pageChangeHandle" />
@@ -153,7 +153,7 @@ export default defineComponent({
               }
             })
             .then(() => {
-              handleGetAllUser();
+              reacquireHandle();
             });
         })
         .catch(() => {

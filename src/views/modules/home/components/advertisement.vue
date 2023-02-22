@@ -1,6 +1,5 @@
 <template>
   <div class="panel padding-15">
-    <div class="panel-title margin_b-10 font-size-18">实施效率</div>
     <div class="panel-content">
       <div class="flex-box text-align-center">
         <div
@@ -14,24 +13,17 @@
 </template>
 
 <script >
-import { defineComponent, reactive, toRefs, onMounted } from "vue";
+import { defineComponent } from "vue";
 import * as echarts from "echarts";
 export default defineComponent({
-  props: {
-    option: {},
-  },
-  setup(props) {
-    const showcontentEfficiency = () => {
-      const mCharts = echarts.init(
-        document.getElementById("contentEfficiency")
-      );
-      mCharts.setOption(props.option);
+  setup() {
+    const init = async (option) => {
+      let mCharts = echarts.init(document.getElementById("contentEfficiency"));
+      mCharts.clear();
+      mCharts.setOption(option);
     };
-    onMounted(async () => {
-      await showcontentEfficiency();
-    });
     return {
-      showcontentEfficiency,
+      init,
     };
   },
 });

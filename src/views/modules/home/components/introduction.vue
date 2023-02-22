@@ -1,6 +1,5 @@
 <template>
   <div class="panel padding-15">
-    <div class="panel-title margin_b-10 font-size-18">总实施数据</div>
     <div class="panel-content text-align-center">
       <div
         class="panel-content flex-item_f-1"
@@ -12,22 +11,17 @@
 </template>
 
 <script >
-import { defineComponent, onMounted } from "vue";
+import { defineComponent } from "vue";
 import * as echarts from "echarts";
 export default defineComponent({
-  props: {
-    option: {},
-  },
-  setup(props) {
-    const showContentTotal = () => {
+  setup() {
+    const init = async (pointPosition) => {
       const mCharts = echarts.init(document.getElementById("contentTotal"));
-      mCharts.setOption(props.option);
+      mCharts.clear();
+      mCharts.setOption(pointPosition);
     };
-    onMounted(async () => {
-      await showContentTotal();
-    });
     return {
-      showContentTotal,
+      init,
     };
   },
 });

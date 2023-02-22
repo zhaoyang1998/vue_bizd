@@ -1,6 +1,5 @@
 <template>
   <div class="panel padding-15">
-    <div class="panel-title margin_b-10 font-size-18">今日数据</div>
     <div class="panel-content">
       <div class="flex-box text-align-center">
         <div
@@ -14,22 +13,17 @@
 </template>
 
 <script >
-import { defineComponent, onMounted } from "vue";
+import { defineComponent } from "vue";
 import * as echarts from "echarts";
 export default defineComponent({
-  props: {
-    option: {},
-  },
-  setup(props) {
-    const showContentDay = () => {
+  setup() {
+    const init = async (pointPosition) => {
       const mCharts = echarts.init(document.getElementById("contentDay"));
-      mCharts.setOption(props.option);
+      mCharts.clear();
+      mCharts.setOption(pointPosition);
     };
-    onMounted(async () => {
-      await showContentDay();
-    });
     return {
-      showContentDay,
+      init,
     };
   },
 });

@@ -20,3 +20,9 @@ export function visitsApi() {
     method: 'get'
   })
 }
+export function getHomePageData(param) {
+  return service({
+    url: '/common/getHomePageData/' + param,
+    method: 'get'
+  })
+}

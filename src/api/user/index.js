@@ -20,7 +20,7 @@ export function getAllUser(params) {
  * @return {*}
  * @author: longyuyu
  */
-export function getUsersByType() {
+export function getDeliveryUser() {
   return service({
     url: `/user/getUsersByType` + '?type=' + 1,
     method: 'post',

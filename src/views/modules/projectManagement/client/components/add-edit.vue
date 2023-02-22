@@ -119,7 +119,6 @@ export default defineComponent({
      * @author: gumingchen
      */
     const submit = () => {
-      console.log(refForm.value.validate);
       refForm.value.validate(async (valid) => {
         if (valid) {
           const r = data.client.clientId

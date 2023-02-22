@@ -13,6 +13,12 @@ export function getAllClient(params) {
     data: params
   })
 }
+export function getAllClients() {
+  return service({
+    url: '/client/getAllClients',
+    method: 'GET',
+  })
+}
 
 export function addClient(param) {
   return service({

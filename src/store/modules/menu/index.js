@@ -100,13 +100,14 @@ export default {
     async getMenuAndPermission({ commit, dispatch }) {
       const r = await selfInfoApi()
       // const r=false
+      const data = JSON.parse(r.data)
       if (r) {
         dispatch('setGet', true)
-        setMenuAndPermission(r.data)
-        commit('SET_MENUS', r.data.menus)
-        commit('SET_PERMISSIONS', r.data.permissions)
+        setMenuAndPermission(data)
+        commit('SET_MENUS', data.menus)
+        commit('SET_PERMISSIONS', data.permissions)
       }
-      return r && r.data ? r.data.menus : []
+      return r && data ? data.menus : []
     },
     /**
      * 设置选中菜单

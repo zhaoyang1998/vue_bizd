@@ -6,7 +6,7 @@ import service from '@/utils/request'
  * @return {*}
  * @author: longyuyu
  */
-export function getAllProject(params) {
+export function getAllPointPosition(params) {
   return service({
     url: `/pointPosition/getPointPosition`,
     method: 'post',
@@ -28,5 +28,50 @@ export function addPointPosition(params) {
     },
     method: 'post',
     data: params
+  })
+}
+
+export function getPointPositionByKeyword(param) {
+  return service({
+    url: '/pointPosition/GetPointPositionByKeyword',
+    method: 'post',
+    data: param
+  })
+}
+
+export function delPointPosition(param) {
+  return service({
+    url: '/pointPosition/delPointPosition',
+    method: 'post',
+    data: param
+  })
+}
+export function startAssignment(param) {
+  return service({
+    url: '/pointPosition/startAssignment',
+    method: 'post',
+    data: param
+  })
+}
+export function finishAssignment(param) {
+  return service({
+    url: '/pointPosition/finishAssignment/' + param,
+    method: 'GET',
+  })
+}
+
+export function allocatingAssignment(param) {
+  return service({
+    url: '/pointPosition/allocatingAssignment',
+    method: 'POST',
+    data: param
+  })
+}
+
+export function cancelAssignment(param) {
+  return service({
+    url: '/pointPosition/cancelAssignment',
+    method: 'POST',
+    data: param
   })
 }
