@@ -1,15 +1,19 @@
 <template>
-  <div class="headbar-container padding-n-10 flex-box flex_w-wrap flex_a_i-center">
+  <div
+    class="headbar-container padding-n-10 flex-box flex_w-wrap flex_a_i-center"
+  >
     <el-tooltip
       content="折叠/展开菜单"
       placement="bottom"
       :show-after="500"
       :hide-after="0"
-      transition="">
+      transition=""
+    >
       <Iconfont
         class="cursor-pointer margin_r-20"
         :name="`collapse-${collapse ? 'right' : 'left'}`"
-        @click="collapseHandle" />
+        @click="collapseHandle"
+      />
     </el-tooltip>
     <Crumb />
     <Action />
@@ -17,21 +21,21 @@
 </template>
 
 <script>
-import { computed, defineComponent } from 'vue'
-import { useStore } from 'vuex'
+import { computed, defineComponent } from "vue";
+import { useStore } from "vuex";
 
-import Crumb from './components/crumb.vue'
-import Action from './components/action.vue'
+import Crumb from "./components/crumb.vue";
+import Action from "./components/action.vue";
 
 export default defineComponent({
   components: { Crumb, Action },
   setup() {
-    const store = useStore()
+    const store = useStore();
 
     const collapse = computed({
       get: () => store.state.menu.collapse,
-      set: (val) => store.dispatch('menu/setCollapse', val)
-    })
+      set: (val) => store.dispatch("menu/setCollapse", val),
+    });
 
     /**
      * @description: 菜单栏折叠事件
@@ -40,15 +44,15 @@ export default defineComponent({
      * @author: gumingchen
      */
     const collapseHandle = () => {
-      collapse.value = !collapse.value
-    }
+      collapse.value = !collapse.value;
+    };
 
     return {
       collapse,
-      collapseHandle
-    }
-  }
-})
+      collapseHandle,
+    };
+  },
+});
 </script>
 
 <style lang="scss" scoped>

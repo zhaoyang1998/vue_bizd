@@ -1,20 +1,24 @@
 <template>
-  <div :class="`
+  <div
+    :class="`
     container-sidebar
     flex-box
     overflow-auto
-    ${panelMode === 3 ? 'container-sidebar-panel' : ''}`">
-    <el-scrollbar class="sidebar-container margin_r-10" v-if="scroll && slots.sidebar">
+    ${panelMode === 3 ? 'container-sidebar-panel' : ''}`"
+  >
+    <el-scrollbar
+      class="sidebar-container margin_r-10"
+      v-if="scroll && slots.sidebar"
+    >
       <div class="padding-10">
         <slot name="sidebar" />
       </div>
     </el-scrollbar>
-    <!-- <div class="sidebar-container margin_r-10" v-if="!scroll && slots.sidebar">
-      <div class="padding-10 height-full">
-        <slot name="sidebar" />
-      </div>
-    </div> -->
-    <Container ref="refContainer" class="container flex-item_f-1 overflow-auto" :mode="panelMode">
+    <Container
+      ref="refContainer"
+      class="container flex-item_f-1 overflow-auto"
+      :mode="panelMode"
+    >
       <template #header v-if="slots.header">
         <slot name="header" />
       </template>
@@ -29,8 +33,8 @@
 </template>
 
 <script>
-import { computed, defineComponent, getCurrentInstance, ref } from 'vue'
-import { useStore } from 'vuex'
+import { computed, defineComponent, getCurrentInstance, ref } from "vue";
+import { useStore } from "vuex";
 
 export default defineComponent({
   props: {
@@ -42,37 +46,39 @@ export default defineComponent({
      */
     mode: {
       type: Number,
-      default: null
+      default: null,
     },
     /**
      * 侧边栏是否开启滚动
      */
     scroll: {
       type: Boolean,
-      default: () => true
-    }
+      default: () => true,
+    },
   },
   setup(props) {
-    const store = useStore()
+    const store = useStore();
 
-    const { slots } = getCurrentInstance()
+    const { slots } = getCurrentInstance();
 
-    const refContainer = ref()
+    const refContainer = ref();
 
-    const panelMode = computed(() => props.mode || store.state.settings.panelMode)
+    const panelMode = computed(
+      () => props.mode || store.state.settings.panelMode
+    );
 
     const setScrollTop = (top = 0) => {
-      refContainer.value.setScrollTop(top)
-    }
+      refContainer.value.setScrollTop(top);
+    };
 
     return {
       slots,
       panelMode,
       refContainer,
-      setScrollTop
-    }
-  }
-})
+      setScrollTop,
+    };
+  },
+});
 </script>
 
 <style lang="scss" scoped>

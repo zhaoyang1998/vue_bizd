@@ -31,6 +31,9 @@
         <el-select
           v-model="pointPosition.clientId"
           clearable
+          :disabled="
+            pointPosition.status % 10 !== 0 && pointPosition.pointPositionId
+          "
           placeholder="请选择所属客户"
         >
           <el-option
@@ -43,13 +46,10 @@
       </el-form-item>
       <el-form-item label="类型" prop="type">
         <el-select
-          :disabled="
-            (!pointPosition.type % 10 === 0) &
-            (pointPosition.pointPositionId !== '')
-          "
           v-model="pointPosition.type"
           clearable
           placeholder="请选择实施类型"
+          :disabled="pointPosition.status % 10 !== 0 && pointPosition.status"
         >
           <el-option label="调研" :value="0" />
           <el-option label="实施" :value="1" />
@@ -131,13 +131,13 @@ export default defineComponent({
     );
 
     const init = async (pointPosition) => {
+      console.log(props.clients);
       if (pointPosition) {
         data.pointPosition = JSON.parse(JSON.stringify(pointPosition));
       } else {
         data.pointPosition = {};
       }
       data.visible = true;
-      data.loading = false;
       nextTick(() => {
         data.loading = false;
       });

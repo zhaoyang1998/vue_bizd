@@ -137,20 +137,41 @@
             >
           </template>
         </el-table-column>
-        <el-table-column align="center" label="操作" width="110" fixed="right">
+        <el-table-column align="center" label="操作" width="140" fixed="right">
           <template v-slot="{ row }">
-            <el-button type="primary" link @click="addEditHandle(row)"
+            <el-button
+              type="primary"
+              link
+              style="margin-left: 12px"
+              @click="addEditHandle(row), handleGetAllClient()"
               >编辑</el-button
             >
             <el-button
               type="danger"
               link
+              style="margin-left: 12px"
               @click="deleteHandle(row.pointPositionId)"
               >删除</el-button
+            >
+            <el-button
+              type="primary"
+              link
+              style="margin-left: 12px"
+              @click="showDetail(row.pointPositionId)"
+              >实施详情</el-button
+            >
+            <el-button
+              type="success"
+              link
+              style="margin-left: 12px"
+              v-if="row.status % 10 === 2"
+              @click="viewDetail(row.pointPositionId)"
+              >实施概览</el-button
             >
           </template>
         </el-table-column>
       </el-table>
+
       <AddEdit
         ref="refAddEdit"
         v-if="visible"
@@ -163,6 +184,8 @@
         @refresh="reacquireHandle()"
         :users="users"
       />
+      <Drawer ref="refDrawer"></Drawer>
+      <ViewDetail ref="refViewDetail"></ViewDetail>
     </template>
     <template #footer>
       <Page :page="page" @change="pageChangeHandle" />
@@ -185,6 +208,8 @@ import ContainerSidebar from "@/components/container-sidebar/index.vue";
 import EnterpriseSidebar from "@/components/enterprise-sidebar/index.vue";
 import AddEdit from "./components/add-edit.vue";
 import StatusChange from "./components/status-change.vue";
+import Drawer from "./components/drawer.vue";
+import ViewDetail from "./components/view-detail.vue";
 import usePage from "@/mixins/page";
 import { clearJson } from "@/utils";
 
@@ -201,13 +226,22 @@ import {
 import { getAllClients } from "@/api/client";
 import { getDeliveryUser } from "@/api/user";
 export default defineComponent({
-  components: { ContainerSidebar, EnterpriseSidebar, AddEdit, StatusChange },
+  components: {
+    ContainerSidebar,
+    EnterpriseSidebar,
+    AddEdit,
+    StatusChange,
+    Drawer,
+    ViewDetail,
+  },
   setup() {
     const refContainerSidebar = ref();
     const refForm = ref();
     const refTable = ref();
     const refAddEdit = ref();
+    const refViewDetail = ref();
     const refStatusChange = ref();
+    const refDrawer = ref();
     const { page } = usePage();
     const data = reactive({
       active: "",
@@ -242,7 +276,6 @@ export default defineComponent({
       page.current = p.cur;
       page.total = p.total;
     };
-
     const handleGetAllClient = async () => {
       const u = await getAllClients();
       clients.value = JSON.parse(u.data);
@@ -251,16 +284,24 @@ export default defineComponent({
       const u = await getDeliveryUser();
       users.value = JSON.parse(u.data);
     };
-
     const reacquireHandle = () => {
       pagination.pageNumber = 1;
       handleGetAllPointPosition(pagination);
     };
-
     const addEditHandle = (pointPosition) => {
       data.visible = true;
       nextTick(() => {
         refAddEdit.value.init(pointPosition);
+      });
+    };
+    const showDetail = (pointPositionId) => {
+      nextTick(() => {
+        refDrawer.value.init(pointPositionId);
+      });
+    };
+    const viewDetail = (pointPositionId) => {
+      nextTick(() => {
+        refViewDetail.value.init(pointPositionId);
       });
     };
     const start = async (pointPosition) => {
@@ -269,6 +310,9 @@ export default defineComponent({
         ElMessage({
           message: "操作成功!",
           type: "success",
+        });
+        nextTick(() => {
+          refDrawer.value.init(pointPosition.pointPositionId);
         });
       }
       reacquireHandle();
@@ -330,7 +374,6 @@ export default defineComponent({
           // to do something on canceled
         });
     };
-
     const showHandle = (row) => {
       const params = {
         key: row.id,
@@ -347,7 +390,6 @@ export default defineComponent({
         }
       });
     };
-
     const selectionHandle = (val) => {
       data.selection = val;
     };
@@ -358,12 +400,10 @@ export default defineComponent({
       pagination.pageSize = page.size;
       handleGetAllPointPosition(pagination);
     };
-
     const changeHandle = (_row) => {
       refContainerSidebar.value.setScrollTop();
       reacquireHandle();
     };
-
     onMounted(async () => {
       await handleGetAllPointPosition(pagination);
     });
@@ -374,6 +414,8 @@ export default defineComponent({
       refTable,
       refAddEdit,
       refStatusChange,
+      refDrawer,
+      refViewDetail,
       page,
       users,
       clients,
@@ -394,6 +436,8 @@ export default defineComponent({
       finish,
       cancel,
       handleGetDeliveryUsers,
+      showDetail,
+      viewDetail,
     };
   },
 });

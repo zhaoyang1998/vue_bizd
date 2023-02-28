@@ -82,7 +82,6 @@ export default defineComponent({
       const tmp = JSON.parse(u.data);
       totalOption = tmp.totalData;
       dayOption = tmp.curData;
-      console.log(totalOption);
       if (tmp.efficiencyData.flag) {
         efficiencyOption = tmp.nullEcharts;
       } else {
