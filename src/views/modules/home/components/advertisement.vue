@@ -13,14 +13,18 @@
 </template>
 
 <script >
-import { defineComponent } from "vue";
+import { defineComponent, nextTick } from "vue";
 import * as echarts from "echarts";
 export default defineComponent({
   setup() {
     const init = async (option) => {
-      let mCharts = echarts.init(document.getElementById("contentEfficiency"));
-      mCharts.clear();
-      mCharts.setOption(option);
+      nextTick(async () => {
+        let mCharts = echarts.init(
+          document.getElementById("contentEfficiency")
+        );
+        mCharts.clear();
+        mCharts.setOption(option);
+      });
     };
     return {
       init,

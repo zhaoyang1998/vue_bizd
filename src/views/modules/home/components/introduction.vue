@@ -11,14 +11,16 @@
 </template>
 
 <script >
-import { defineComponent } from "vue";
+import { defineComponent, nextTick } from "vue";
 import * as echarts from "echarts";
 export default defineComponent({
   setup() {
     const init = async (pointPosition) => {
-      const mCharts = echarts.init(document.getElementById("contentTotal"));
-      mCharts.clear();
-      mCharts.setOption(pointPosition);
+      nextTick(async () => {
+        const mCharts = echarts.init(document.getElementById("contentTotal"));
+        mCharts.clear();
+        mCharts.setOption(pointPosition);
+      });
     };
     return {
       init,

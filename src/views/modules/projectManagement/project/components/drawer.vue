@@ -8,11 +8,7 @@
     :before-close="handleClose"
   >
     <el-steps :active="step.seq" finish-status="success" :align-center="true">
-      <el-step
-        v-for="i in step.total"
-        :title="'步骤' + i"
-        :key="item"
-      ></el-step>
+      <el-step v-for="i in step.total" :title="'步骤' + i" :key="i"></el-step>
     </el-steps>
     <el-form ref="form" :model="step" label-width="80px">
       <el-row :gutter="20" class="rowTop">

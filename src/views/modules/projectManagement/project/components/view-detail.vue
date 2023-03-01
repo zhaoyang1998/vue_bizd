@@ -5,7 +5,6 @@
     :append-to-body="true"
     :show-close="true"
     :size="width"
-    :before-close="handleClose"
   >
     <div class="block">
       <el-timeline>
