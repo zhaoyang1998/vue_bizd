@@ -1,7 +1,12 @@
 <template>
-  <el-drawer title="实施详情" v-model="drawer" :append-to-body="true" :show-close="true" size="50%"
-    :before-close="handleClose">
-
+  <el-drawer
+    title="实施详情"
+    v-model="drawer"
+    :append-to-body="true"
+    :show-close="true"
+    size="50%"
+    :before-close="handleClose"
+  >
     <div>
       <el-table :data="tableData" style="width: 100%">
         <el-table-column label="执行名称">
@@ -12,8 +17,13 @@
         </el-table-column>
         <el-table-column label="时间">
           <template v-slot="scope">
-            <el-input  v-model="scope.row.msg" type="textarea" autosize
-              style="line-height:40px !important" placeholder="请输入发送内容"></el-input>
+            <el-input
+              v-model="scope.row.msg"
+              type="textarea"
+              autosize
+              style="line-height: 40px !important"
+              placeholder="请输入发送内容"
+            ></el-input>
           </template>
         </el-table-column>
         <el-table-column label="执行名称">
@@ -22,28 +32,29 @@
             </el-input>
           </template>
         </el-table-column>
-
-
         <el-table-column label="操作">
           <template v-slot="scope">
-            <el-button type="text" @click="delClick(scope.row)" size="small">前插</el-button>
-            <el-button type="text" @click="delClick(scope.row)" size="small">后插</el-button>
-            <el-button type="text" @click="delClick(scope.row)" size="small">删除</el-button>
-
+            <el-button type="text" @click="delClick(scope.row)" size="small"
+              >前插</el-button
+            >
+            <el-button type="text" @click="delClick(scope.row)" size="small"
+              >后插</el-button
+            >
+            <el-button type="text" @click="delClick(scope.row)" size="small"
+              >删除</el-button
+            >
           </template>
         </el-table-column>
       </el-table>
       <el-button @click="add">添加</el-button>
       <el-button @click="edit">编辑</el-button>
       <el-button @click="save">保存</el-button>
-
-      
     </div>
   </el-drawer>
 </template>
   
 <script>
-import { defineComponent, reactive, toRefs ,ref} from "vue";
+import { defineComponent, reactive, toRefs, ref } from "vue";
 import { ElMessageBox, ElMessage } from "element-plus";
 import {
   getPPDetail,
@@ -54,16 +65,18 @@ import {
 } from "@/api/implementDetails";
 export default defineComponent({
   setup(props, { emit }) {
-    const tableData=ref([{
-      implementDetailId: "",
+    const tableData = ref([
+      {
+        implementDetailId: "",
         pointPositionId: "",
         desc: "",
         stepName: "",
         total: 1,
         seq: 1,
         startTime: "",
-        endTime: "", 
-    }])
+        endTime: "",
+      },
+    ]);
     const data = reactive({
       drawer: false,
       width: "25%",
@@ -119,7 +132,7 @@ export default defineComponent({
       data.times[1] = r.endTime;
       data.step = r;
     };
-    const add = async() =>{
+    const add = async () => {
       tableData.value.push({
         implementDetailId: "",
         pointPositionId: "",
@@ -129,8 +142,8 @@ export default defineComponent({
         seq: 1,
         startTime: "",
         endTime: "",
-    })
-    }
+      });
+    };
     const handleClose = async (done) => {
       ElMessageBox.confirm("是否确认关闭?", "提示", {
         confirmButtonText: "确定",

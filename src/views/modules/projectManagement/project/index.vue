@@ -153,18 +153,18 @@
               @click="deleteHandle(row.pointPositionId)"
               >删除</el-button
             >
-            <el-button
+            <!-- <el-button
               type="primary"
               link
               style="margin-left: 12px"
               @click="showDetail(row.pointPositionId)"
               >实施详情</el-button
-            >
+            > -->
             <el-button
               type="success"
               link
               style="margin-left: 12px"
-              v-if="row.status % 10 === 2"
+              v-if="row.status % 10 !== 0"
               @click="viewDetail(row.pointPositionId)"
               >实施概览</el-button
             >
@@ -296,12 +296,12 @@ export default defineComponent({
     };
     const showDetail = (pointPositionId) => {
       nextTick(() => {
-        refDrawer.value.init(pointPositionId);
+        refViewDetail.value.init(pointPositionId, true);
       });
     };
     const viewDetail = (pointPositionId) => {
       nextTick(() => {
-        refViewDetail.value.init(pointPositionId);
+        refViewDetail.value.init(pointPositionId, false);
       });
     };
     const start = async (pointPosition) => {
@@ -312,7 +312,7 @@ export default defineComponent({
           type: "success",
         });
         nextTick(() => {
-          refDrawer.value.init(pointPosition.pointPositionId);
+          viewDetail(pointPosition.pointPositionId);
         });
       }
       reacquireHandle();

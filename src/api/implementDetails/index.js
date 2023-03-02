@@ -48,3 +48,11 @@ export function getAllDetail(param) {
         method: 'GET',
     })
 }
+
+export function saveDetail(params) {
+    return service({
+        url: '/details/saveDetail',
+        method: 'post',
+        data: params
+    })
+}
