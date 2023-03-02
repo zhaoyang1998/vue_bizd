@@ -1,75 +1,49 @@
 <template>
-  <el-drawer
-    title="实施详情"
-    v-model="drawer"
-    :append-to-body="true"
-    :show-close="true"
-    :size="width"
-    :before-close="handleClose"
-  >
-    <el-steps :active="step.seq" finish-status="success" :align-center="true">
-      <el-step v-for="i in step.total" :title="'步骤' + i" :key="i"></el-step>
-    </el-steps>
-    <el-form ref="form" :model="step" label-width="80px">
-      <el-row :gutter="20" class="rowTop">
-        <el-col :span="6"><span>步骤名称:</span></el-col>
-      </el-row>
-      <el-row :gutter="20" class="rowTop">
-        <el-col :span="16" :offset="2">
-          <el-input
-            placeholder="请输入内容"
-            v-model="step.stepName"
-            clearable
-            style="width: 400px"
-          >
-          </el-input>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20" class="rowTop">
-        <el-col :span="6"><span>时间段:</span></el-col>
-      </el-row>
-      <el-row :gutter="20" class="rowTop">
-        <el-col :span="16" :offset="2">
-          <div class="block">
-            <el-date-picker
-              value-format="YYYY-MM-DD HH:mm:ss"
-              v-model="times"
-              type="datetimerange"
-              range-separator="至"
-              start-placeholder="开始日期"
-              end-placeholder="结束日期"
-            >
-            </el-date-picker>
-          </div>
-        </el-col>
-      </el-row>
-      <el-row :gutter="20" class="rowTop">
-        <el-col :span="6"><span>具体内容:</span></el-col>
-      </el-row>
-      <el-row :gutter="20" class="rowTop">
-        <el-col :span="16" :offset="2">
-          <el-input
-            type="textarea"
-            placeholder="请输入内容"
-            v-model="step.desc"
-            :autosize="{ minRows: 3, maxRows: 6 }"
-            style="width: 400px"
-          >
-          </el-input>
-        </el-col>
-      </el-row>
-    </el-form>
-    <div class="bottom">
-      <el-button @click="prev" type="primary">上一步</el-button>
-      <el-button @click="delStep" type="danger">删除</el-button>
-      <el-button @click="next" type="primary">下一步</el-button>
-      <el-button @click="save" type="success">保存</el-button>
+  <el-drawer title="实施详情" v-model="drawer" :append-to-body="true" :show-close="true" size="50%"
+    :before-close="handleClose">
+
+    <div>
+      <el-table :data="tableData" style="width: 100%">
+        <el-table-column label="执行名称">
+          <template v-slot="scope">
+            <el-input v-model="scope.row.total" placeholder="请输入名称">
+            </el-input>
+          </template>
+        </el-table-column>
+        <el-table-column label="时间">
+          <template v-slot="scope">
+            <el-input  v-model="scope.row.msg" type="textarea" autosize
+              style="line-height:40px !important" placeholder="请输入发送内容"></el-input>
+          </template>
+        </el-table-column>
+        <el-table-column label="执行名称">
+          <template v-slot="scope">
+            <el-input v-model="scope.row.name" placeholder="请输入名称">
+            </el-input>
+          </template>
+        </el-table-column>
+
+
+        <el-table-column label="操作">
+          <template v-slot="scope">
+            <el-button type="text" @click="delClick(scope.row)" size="small">前插</el-button>
+            <el-button type="text" @click="delClick(scope.row)" size="small">后插</el-button>
+            <el-button type="text" @click="delClick(scope.row)" size="small">删除</el-button>
+
+          </template>
+        </el-table-column>
+      </el-table>
+      <el-button @click="add">添加</el-button>
+      <el-button @click="edit">编辑</el-button>
+      <el-button @click="save">保存</el-button>
+
+      
     </div>
   </el-drawer>
 </template>
   
-  <script>
-import { defineComponent, reactive, toRefs } from "vue";
+<script>
+import { defineComponent, reactive, toRefs ,ref} from "vue";
 import { ElMessageBox, ElMessage } from "element-plus";
 import {
   getPPDetail,
@@ -80,6 +54,16 @@ import {
 } from "@/api/implementDetails";
 export default defineComponent({
   setup(props, { emit }) {
+    const tableData=ref([{
+      implementDetailId: "",
+        pointPositionId: "",
+        desc: "",
+        stepName: "",
+        total: 1,
+        seq: 1,
+        startTime: "",
+        endTime: "", 
+    }])
     const data = reactive({
       drawer: false,
       width: "25%",
@@ -135,6 +119,18 @@ export default defineComponent({
       data.times[1] = r.endTime;
       data.step = r;
     };
+    const add = async() =>{
+      tableData.value.push({
+        implementDetailId: "",
+        pointPositionId: "",
+        desc: "",
+        stepName: "",
+        total: 1,
+        seq: 1,
+        startTime: "",
+        endTime: "",
+    })
+    }
     const handleClose = async (done) => {
       ElMessageBox.confirm("是否确认关闭?", "提示", {
         confirmButtonText: "确定",
@@ -161,7 +157,9 @@ export default defineComponent({
       timeTransfer,
       prev,
       save,
+      add,
       ...toRefs(data),
+      tableData,
     };
   },
 });
@@ -174,9 +172,11 @@ export default defineComponent({
   font-size: 1rem;
   text-align: center;
 }
+
 .rowTop {
   margin-top: 20px;
 }
+
 .bottom {
   position: absolute;
   bottom: 0;
