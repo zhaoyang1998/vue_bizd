@@ -44,6 +44,23 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="负责人" prop="userId">
+        <el-select
+          v-model="pointPosition.userId"
+          clearable
+          placeholder="请选择负责人"
+          :disabled="
+            pointPosition.status % 10 !== 0 && pointPosition.pointPositionId
+          "
+        >
+          <el-option
+            :key="item"
+            :label="item.userName"
+            :value="item.userId"
+            v-for="item in users"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="类型" prop="type">
         <el-select
           v-model="pointPosition.type"
@@ -86,11 +103,11 @@ import { defineComponent, nextTick, reactive, ref, toRefs } from "vue";
 
 import { ElMessage } from "element-plus";
 
-import { addPointPosition } from "@/api/project";
+import { addPointPosition, updatePointPosition } from "@/api/project";
 
 export default defineComponent({
   emits: ["refresh"],
-  props: { clients: Array },
+  props: { clients: Array, users: Array },
   setup(props, { emit }) {
     // const userdata = toRef(props, "user");
     const refForm = ref();
@@ -153,7 +170,7 @@ export default defineComponent({
       refForm.value.validate(async (valid) => {
         if (valid) {
           const r = data.pointPosition.pointPositionId
-            ? await addPointPosition(data.pointPosition)
+            ? await updatePointPosition(data.pointPosition)
             : await addPointPosition(data.pointPosition);
           if (r) {
             data.visible = false;

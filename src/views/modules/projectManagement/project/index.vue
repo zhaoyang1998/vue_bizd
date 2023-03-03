@@ -19,7 +19,7 @@
           >
           <el-button
             type="primary"
-            @click="addEditHandle(), handleGetAllClient()"
+            @click="addEditHandle(), handleGetAllClientsAndUsers()"
             >新增</el-button
           >
           <el-button type="danger" @click="deleteHandle()">批量删除</el-button>
@@ -56,7 +56,7 @@
         <el-table-column align="center" label="ip网段" prop="ip" />
         <el-table-column align="center" label="设备别名" prop="cpeName" />
         <el-table-column align="center" label="状态" prop="statusName" />
-        <el-table-column align="center" label="数据来源" prop="userName" />
+        <el-table-column align="center" label="负责人" prop="userName" />
         <el-table-column
           align="center"
           label="实施资料链接"
@@ -143,7 +143,7 @@
               type="primary"
               link
               style="margin-left: 12px"
-              @click="addEditHandle(row), handleGetAllClient()"
+              @click="addEditHandle(row), handleGetAllClientsAndUsers()"
               >编辑</el-button
             >
             <el-button
@@ -177,6 +177,7 @@
         v-if="visible"
         @refresh="reacquireHandle()"
         :clients="clients"
+        :users="allUsers"
       />
       <StatusChange
         ref="refStatusChange"
@@ -224,7 +225,7 @@ import {
   cancelAssignment,
 } from "@/api/project";
 import { getAllClients } from "@/api/client";
-import { getDeliveryUser } from "@/api/user";
+import { getDeliveryUser, getAllUsers } from "@/api/user";
 export default defineComponent({
   components: {
     ContainerSidebar,
@@ -256,6 +257,7 @@ export default defineComponent({
       pointPosition: [],
     });
     const users = ref([]);
+    const allUsers = ref([]);
     const clients = ref([]);
     const pagination = reactive({
       pageSize: page.size,
@@ -276,9 +278,11 @@ export default defineComponent({
       page.current = p.cur;
       page.total = p.total;
     };
-    const handleGetAllClient = async () => {
+    const handleGetAllClientsAndUsers = async () => {
       const u = await getAllClients();
+      const r = await getAllUsers();
       clients.value = JSON.parse(u.data);
+      allUsers.value = JSON.parse(r.data);
     };
     const handleGetDeliveryUsers = async () => {
       const u = await getDeliveryUser();
@@ -418,6 +422,7 @@ export default defineComponent({
       refViewDetail,
       page,
       users,
+      allUsers,
       clients,
       ...toRefs(data),
       reacquireHandle,
@@ -429,7 +434,7 @@ export default defineComponent({
       changeHandle,
       clearJson,
       handleGetAllPointPosition,
-      handleGetAllClient,
+      handleGetAllClientsAndUsers,
       searchPointPosition,
       start,
       allocating,

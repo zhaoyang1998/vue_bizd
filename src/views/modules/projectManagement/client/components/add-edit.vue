@@ -24,6 +24,20 @@
       <el-form-item label="客户简称" prop="clientAbbreviation">
         <el-input v-model="client.clientAbbreviation" placeholder="客户简称" />
       </el-form-item>
+      <el-form-item label="负责人" prop="principalId">
+        <el-select
+          v-model="client.principalId"
+          clearable
+          placeholder="请选择负责人"
+        >
+          <el-option
+            :key="item"
+            :label="item.userName"
+            :value="item.userId"
+            v-for="item in users"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="canvas账号" prop="canvasAccount">
         <el-input v-model="client.canvasAccount" placeholder="canvas账号" />
       </el-form-item>
@@ -61,7 +75,7 @@ import { addClient, updateClient } from "@/api/client";
 
 export default defineComponent({
   emits: ["refresh"],
-  props: { user: Array },
+  props: { users: Array },
   setup(props, { emit }) {
     const refForm = ref();
     const data = reactive({
@@ -100,6 +114,7 @@ export default defineComponent({
     );
 
     const init = async (client) => {
+      console.log(props.users);
       if (client) {
         data.client = JSON.parse(JSON.stringify(client));
       } else {

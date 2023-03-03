@@ -58,3 +58,10 @@ export function delUser(param) {
     data: param
   })
 }
+
+export function getAllUsers() {
+  return service({
+    url: '/user/getAllUsers',
+    method: 'get',
+  })
+}

@@ -75,3 +75,12 @@ export function cancelAssignment(param) {
     data: param
   })
 }
+
+
+export function updatePointPosition(param) {
+  return service({
+    url: '/pointPosition/updatePointPosition',
+    method: 'POST',
+    data: param
+  })
+}

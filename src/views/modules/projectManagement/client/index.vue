@@ -17,7 +17,11 @@
           <el-button v-repeat @click="clearJson(search), reacquireHandle()"
             >重置</el-button
           >
-          <el-button type="primary" @click="addEditHandle()">新增</el-button>
+          <el-button
+            type="primary"
+            @click="addEditHandle(), handleGetAllUsers()"
+            >新增</el-button
+          >
           <el-button type="danger" @click="deleteHandle()">批量删除</el-button>
         </el-form-item>
       </el-form>
@@ -48,7 +52,10 @@
         <el-table-column align="center" label="状态" prop="statusName" />
         <el-table-column align="center" label="操作" width="110" fixed="right">
           <template v-slot="{ row }">
-            <el-button type="primary" link @click="addEditHandle(row)"
+            <el-button
+              type="primary"
+              link
+              @click="addEditHandle(row), handleGetAllUsers()"
               >编辑</el-button
             >
             <el-button type="danger" link @click="deleteHandle(row.clientId)"
@@ -57,7 +64,12 @@
           </template>
         </el-table-column>
       </el-table>
-      <AddEdit ref="refAddEdit" v-if="visible" @refresh="reacquireHandle()" />
+      <AddEdit
+        ref="refAddEdit"
+        :users="users"
+        v-if="visible"
+        @refresh="reacquireHandle()"
+      />
     </template>
     <template #footer>
       <Page :page="page" @change="pageChangeHandle" />
@@ -85,6 +97,7 @@ import { clearJson } from "@/utils";
 
 import { globalSetShowApi } from "@/api/role";
 import { getAllClient, getClientsByKeyword, delClient } from "@/api/client";
+import { getAllUsers } from "@/api/user";
 
 export default defineComponent({
   components: { ContainerSidebar, EnterpriseSidebar, AddEdit },
@@ -93,6 +106,7 @@ export default defineComponent({
     const refForm = ref();
     const refTable = ref();
     const refAddEdit = ref();
+    const users = ref([]);
     const { page } = usePage();
     const data = reactive({
       loading: false,
@@ -108,6 +122,10 @@ export default defineComponent({
     const pagination = {
       pageSize: page.size,
       pageNumber: page.current,
+    };
+    const handleGetAllUsers = async () => {
+      const r = await getAllUsers();
+      users.value = JSON.parse(r.data);
     };
 
     const handleGetAllClient = async (params) => {
@@ -216,6 +234,7 @@ export default defineComponent({
       refForm,
       refTable,
       refAddEdit,
+      users,
       page,
       ...toRefs(data),
       reacquireHandle,
@@ -228,6 +247,7 @@ export default defineComponent({
       clearJson,
       handleGetAllClient,
       searchClient,
+      handleGetAllUsers,
     };
   },
 });
