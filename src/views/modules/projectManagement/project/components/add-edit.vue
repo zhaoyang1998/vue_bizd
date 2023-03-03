@@ -169,13 +169,16 @@ export default defineComponent({
     const submit = () => {
       refForm.value.validate(async (valid) => {
         if (valid) {
+          const info = data.pointPosition.pointPositionId
+            ? " "
+            : "请注意分配实施人员！";
           const r = data.pointPosition.pointPositionId
             ? await updatePointPosition(data.pointPosition)
             : await addPointPosition(data.pointPosition);
           if (r) {
             data.visible = false;
             ElMessage({
-              message: "操作成功!",
+              message: "操作成功!" + info,
               type: "success",
             });
             emit("refresh");

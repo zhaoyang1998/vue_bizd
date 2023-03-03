@@ -47,15 +47,18 @@
       <el-form-item label="资料链接" prop="dataLink">
         <el-input v-model="client.dataLink" placeholder="资料链接" />
       </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-select
-          v-model="client.status"
-          clearable
-          placeholder="请选择实施状态"
-        >
+      <el-form-item
+        label="类型"
+        prop="status"
+        v-if="client.status % 10 === 0 || !client.clientId"
+      >
+        <el-select v-model="client.status" clearable placeholder="请选择类型">
           <el-option label="实施" :value="10" />
           <el-option label="POC" :value="20" />
         </el-select>
+      </el-form-item>
+      <el-form-item label="状态" prop="statusName" v-else>
+        <el-input v-model="client.statusName" :disabled="true" />
       </el-form-item>
     </el-form>
     <template #footer>

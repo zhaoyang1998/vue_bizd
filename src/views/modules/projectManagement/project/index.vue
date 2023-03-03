@@ -97,9 +97,7 @@
           <template #default="scope">
             <el-button
               type="success"
-              v-if="
-                (scope.row.status % 10 === 0) & (scope.row.implementerId !== '')
-              "
+              v-if="scope.row.status % 10 === 0 && scope.row.implementerId"
               link
               style="margin-left: 12px"
               @click="start(scope.row)"
@@ -107,9 +105,7 @@
             >
             <el-button
               type="primary"
-              v-if="
-                (scope.row.status % 10 === 0) & (scope.row.implementerId === '')
-              "
+              v-if="scope.row.status % 10 === 0 && !scope.row.implementerId"
               link
               style="margin-left: 12px"
               @click="allocating(scope.row), handleGetDeliveryUsers()"
@@ -126,9 +122,8 @@
             <el-button
               type="danger"
               v-if="
-                (scope.row.status % 10 === 1) |
-                  ((scope.row.implementerId !== '') &
-                    (scope.row.status % 10 !== 2))
+                scope.row.status % 10 === 1 ||
+                (scope.row.implementerId && scope.row.status % 10 !== 2)
               "
               link
               style="margin-left: 12px"
