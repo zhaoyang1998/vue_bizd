@@ -88,6 +88,9 @@
       <el-form-item label="实施资料链接" prop="dataLink">
         <el-input v-model="pointPosition.dataLink" placeholder="实施资料链接" />
       </el-form-item>
+      <el-form-item label="备注" prop="remark">
+        <el-input v-model="pointPosition.remark" placeholder="备注" />
+      </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
