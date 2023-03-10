@@ -116,7 +116,7 @@ service.interceptors.response.use(
       if (!response.data.code) {
         return {
           blob: response.data,
-          name: decodeURI(response.headers['content-disposition'].replace('attachment;filename=', ''))
+          name: decodeURI(response.headers['content-disposition'].replace("attachment; filename*=utf-8''", ''))
         }
       } else {
         return response.data || null

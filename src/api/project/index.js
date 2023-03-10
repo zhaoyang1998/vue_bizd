@@ -1,4 +1,6 @@
+import { ContentType } from '@/utils/dictionary'
 import service from '@/utils/request'
+import { download } from '@/utils'
 
 /**
  * @description: 获取当前实施情况
@@ -83,4 +85,17 @@ export function updatePointPosition(param) {
     method: 'POST',
     data: param
   })
+}
+
+export async function exportExcel(param) {
+  const r = await service({
+    url: '/pointPosition/exportExcel',
+    method: 'POST',
+    data: param,
+    responseType:'arraybuffer'
+  })
+  if (r) {
+    const { blob, name} = r
+    download(blob, name)
+  }
 }

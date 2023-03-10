@@ -1,6 +1,5 @@
 import store from '@/store'
 import { MAPPING } from '@/utils/constant'
-
 /**
  * @description: 生成UUID
  * @param {*}
@@ -310,7 +309,8 @@ export function darken(color, level) {
  */
 export function download(blob, name) {
   if (blob) {
-    const href = URL.createObjectURL(blob)
+    const tmp = new Blob([blob])
+    const href = URL.createObjectURL(tmp)
     const a = document.createElement('a')
     a.href = href
     a.download = name
@@ -318,5 +318,5 @@ export function download(blob, name) {
     a.click()
     document.body.removeChild(a)
     window.URL.revokeObjectURL(href)
-  }
+  } 
 }

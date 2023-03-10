@@ -22,6 +22,10 @@
             @click="addEditHandle(), handleGetAllClientsAndUsers()"
             >新增</el-button
           >
+          <el-button type="primary" @click="handleExportExcel()"
+            >导出</el-button
+          >
+
           <el-button type="danger" @click="deleteHandle()">批量删除</el-button>
         </el-form-item>
       </el-form>
@@ -218,6 +222,7 @@ import {
   startAssignment,
   finishAssignment,
   cancelAssignment,
+  exportExcel,
 } from "@/api/project";
 import { getAllClients } from "@/api/client";
 import { getDeliveryUser, getAllUsers } from "@/api/user";
@@ -258,6 +263,9 @@ export default defineComponent({
       pageSize: page.size,
       pageNumber: page.current,
     });
+    const handleExportExcel = () => {
+      exportExcel(data.search);
+    };
     const searchPointPosition = async () => {
       const search = data.search;
       search.pageSize = pagination.pageSize;
@@ -438,6 +446,7 @@ export default defineComponent({
       handleGetDeliveryUsers,
       showDetail,
       viewDetail,
+      handleExportExcel,
     };
   },
 });
