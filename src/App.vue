@@ -42,8 +42,14 @@ export default defineComponent({
 
 <style lang="scss">
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
+  font-family: Chinese Quote,-apple-system,BlinkMacSystemFont,Segoe UI,PingFang SC,Hiragino Sans GB,Microsoft YaHei,Helvetica Neue,Helvetica,Arial,sans-serif;
+  font-size: 12px;
+  font-variant: tabular-nums;
+  font-variant-ligatures: normal;
+  font-variant-numeric: tabular-nums;
+  font-variant-east-asian: normal;
+  font-variant-caps: normal;
+  font-variant-alternates: normal;  -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
   width: 100%;

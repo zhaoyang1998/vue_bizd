@@ -1,7 +1,38 @@
 <template>
   <div class="tinymce-boxz">
+    <div v-if="isEdit">
+    </div>
+    <el-form ref="refForm" :inline="true" style="text-align: right">
+
+        <el-form-item>
+          <el-input
+            v-model="customer"
+            placeholder="选择客户"
+            clearable
+          />
+        </el-form-item>
+        <el-form-item>
+          <el-input
+            v-model="title"
+            placeholder="写实施文档名称"
+            clearable
+          />
+        </el-form-item>
+
+        <el-form-item>
+          <el-button type="primary" :icon="Search" @click="getDoc">Search</el-button>
+        </el-form-item>
+
+        <el-form-item>
+          <el-button type="primary" @click="saveContent">
+            Upload<el-icon class="el-icon--right"><Upload /></el-icon>
+          </el-button>
+        </el-form-item>
+       
+      </el-form>
+    
+    
     <Editor v-model="content" :api-key="apiKey" :init="init" />
-    <button type="submit" @click="saveContent">保存</button>
   </div>
 </template>
 
@@ -9,24 +40,64 @@
 import Editor from "@tinymce/tinymce-vue";
 import { reactive, ref, toRefs } from "@vue/reactivity";
 import axios from "axios";
+import { Upload,Search} from '@element-plus/icons-vue'
+import { ElMessage } from 'element-plus'
+import { onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import {saveContentApi,getDocApi} from "@/api/document"
+
 
 export default {
-  name: "document",
   components: {
     Editor,
+    Upload,
+
   },
-  methods:{
-    saveContent(){
-      axios.post('http://localhost:8888/document/saveFile', {content: this.content}).then(response => {
-        console.log('Content saved successfully');
-      }).catch(error => {
-        console.error(error);
-      });
-    }
-  },
-  setup() {
+  
+  created(){
     
-    const content = ref("默认文字 hello word");
+  },
+ 
+  setup() {
+    const route = useRoute();
+    const customer= ref();
+    const title=ref();
+    const content = ref();
+
+    const init = async()=>{
+      title.value=route.query.title
+      customer.value=route.query.customer
+      getDoc()
+
+    }
+    const  saveContent = async () => {
+      const p = await saveContentApi({content: content.value,title: title.value,customer:customer.value});
+      if (p) {
+        ElMessage({
+          message: '上传文章成功',
+          type: 'success',
+        }); 
+      }else{
+        ElMessage.error('上传文章失败') 
+      }
+    };
+    const getDoc = async()=>{
+      const u = await getDocApi({content: "",title: title.value,customer:customer.value});
+      console.log(u)
+      if (u){
+        content.value=u.data;
+
+        ElMessage({
+          message: '获取文章成功',
+          type: 'success',
+        });
+
+      }
+      else{
+        ElMessage.error('获取文章失败')
+      }
+        
+    }
     const tiny = reactive({
       apiKey: "qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc", //https://github.com/tinymce/tinymce-vue/blob/main/src/demo/views/Iframe.vue
       init: {
@@ -39,7 +110,7 @@ export default {
         branding: false, //tiny技术支持信息是否显示
         // statusbar: false,  //最下方的元素路径和字数统计那一栏是否显示
         // elementpath: false, //元素路径是否显示
-
+        // inline: true,   //内联模式
         font_formats:
           "微软雅黑=Microsoft YaHei,Helvetica Neue,PingFang SC,sans-serif;苹果苹方=PingFang SC,Microsoft YaHei,sans-serif;宋体=simsun,serif;仿宋体=FangSong,serif;黑体=SimHei,sans-serif;Arial=arial,helvetica,sans-serif;Arial Black=arial black,avant garde;Book Antiqua=book antiqua,palatino;", //字体样式
         plugins:
@@ -106,9 +177,18 @@ export default {
         },
       },
     });
+    onMounted(async () => {
+
+      await init();
+    });
     return {
       content,
       ...toRefs(tiny),
+      title,
+      customer,
+      getDoc,
+      saveContent,
+ 
     };
   },
 };
