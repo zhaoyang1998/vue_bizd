@@ -1,6 +1,6 @@
 <template>
   <div class="layout-container height-full flex-box overflow-auto">
-    <Sidebar />
+    <Sidebar></Sidebar>
     <component :is="component" class="navigation-container">
       <template #headbar>
         <Headbar />

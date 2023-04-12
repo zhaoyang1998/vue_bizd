@@ -1,7 +1,6 @@
 <template>
-  <div class="tinymce-boxz">
-    <div v-if="isEdit">
-    </div>
+  <div class="tinymce-boxz" >
+
     <el-form ref="refForm" :inline="true" style="text-align: right">
 
         <el-form-item>
@@ -97,6 +96,11 @@ export default {
     const tiny = reactive({
       apiKey: "qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc", //https://github.com/tinymce/tinymce-vue/blob/main/src/demo/views/Iframe.vue
       init: {
+        content_css: false, // 禁用默认样式表
+        fullpage_default_doctype: '<!DOCTYPE html>', // 设置全屏模式的 doctype
+        fullpage_default_encoding: 'UTF-8', // 设置全屏模式的编码
+        fullpage_default_font_size: '16px', // 设置全屏模式的字体大小
+
         language: "zh_CN", //语言类型
         placeholder: "在这里输入文字", //textarea中的提示信息
         min_width: 320,
@@ -120,6 +124,7 @@ export default {
         // images_upload_url: '/apib/api-upload/uploadimg',  //后端处理程序的url，建议直接自定义上传函数image_upload_handler，这个就可以不用了
         // images_upload_base_path: '/demo',  //相对基本路径--关于图片上传建议查看--http://tinymce.ax-z.cn/general/upload-images.php
         paste_data_images: true, //图片是否可粘贴
+        
         //此处为图片上传处理函数
         images_upload_handler: (blobInfo, success, failure) => {
           // 这里用base64的图片形式上传图片,
@@ -193,8 +198,10 @@ export default {
 .tinymce-boxz > textarea {
   display: none;
 }
+
 </style>
 <style>
+
 /* 隐藏apikey没有绑定当前域名的提示 */
 .tox-notifications-container .tox-notification--warning {
   display: none !important;
@@ -203,5 +210,8 @@ export default {
 .tox.tox-tinymce {
   max-width: 100%;
 }
-
+/* 配置全屏z轴 */
+.layout-container .navigation-container{
+  z-index: 1000;
+}
 </style>
