@@ -5,18 +5,14 @@
     <el-form ref="refForm" :inline="true" style="text-align: right">
 
         <el-form-item>
-          <el-input
-            v-model="customer"
-            placeholder="选择客户"
+          <span
             clearable
-          />
+          >用户名：{{customer}}</span>
         </el-form-item>
         <el-form-item>
-          <el-input
-            v-model="title"
-            placeholder="写实施文档名称"
+          <span
             clearable
-          />
+          >点位名称：{{title}}</span>
         </el-form-item>
 
         <el-form-item>
