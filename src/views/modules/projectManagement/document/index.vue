@@ -58,6 +58,8 @@ export default {
     const customer= ref();
     const title=ref();
     const content = ref();
+    const pointPositionId = ref();
+ 
 
     const init = async()=>{
       title.value=route.query.title
@@ -66,7 +68,7 @@ export default {
 
     }
     const  saveContent = async () => {
-      const p = await saveContentApi({content: content.value,title: title.value,customer:customer.value});
+      const p = await saveContentApi({content: content.value,title: title.value,customer:customer.value,pointPositionId:pointPositionId.value});
       if (p) {
         ElMessage({
           message: '上传文章成功',
@@ -77,7 +79,7 @@ export default {
       }
     };
     const getDoc = async()=>{
-      const u = await getDocApi({content: "",title: title.value,customer:customer.value});
+      const u = await getDocApi({content: "",title: title.value,customer:customer.value,pointPositionId:pointPositionId.value});
       console.log(u)
       if (u){
         content.value=u.data;
