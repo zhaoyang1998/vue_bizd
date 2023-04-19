@@ -64,6 +64,7 @@ export default {
     const init = async()=>{
       title.value=route.query.title
       customer.value=route.query.customer
+      pointPositionId.value=route.query.pointPositionId
       getDoc()
 
     }

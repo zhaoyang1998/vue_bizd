@@ -163,7 +163,7 @@
               type="danger"
               link
               style="margin-left: 12px"
-              @click="jumpDoc(row.clientAbbreviation,row.pointPositionName)"
+              @click="jumpDoc(row.clientAbbreviation,row.pointPositionName,row.pointPositionId)"
               >实施文档</el-button
             >
             <el-button
@@ -358,8 +358,8 @@ export default defineComponent({
       }
       reacquireHandle();
     };
-    const jumpDoc = (clientAbbreviation,pointPositionName) =>{
-      router.push({ path: 'document', query: { customer: clientAbbreviation,title:pointPositionName } })
+    const jumpDoc = (clientAbbreviation,pointPositionName,pointPositionId) =>{
+      router.push({ path: 'document', query: { customer: clientAbbreviation,title:pointPositionName,pointPositionId:pointPositionId } })
 
     }
     const deleteHandle = (id) => {
