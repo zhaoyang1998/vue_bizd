@@ -219,6 +219,13 @@
               >删除</el-button
             >
             <el-button
+              type="danger"
+              link
+              style="margin-left: 12px"
+              @click="jumpDoc(row.clientAbbreviation,row.pointPositionName,row.pointPositionId)"
+              >实施文档</el-button
+            >
+            <el-button
               class="fontSize"
               type="success"
               link
@@ -311,6 +318,7 @@ import Drawer from "./components/drawer.vue";
 import ViewDetail from "./components/view-detail.vue";
 import usePage from "@/mixins/page";
 import { clearJson } from "@/utils";
+import router from "@/router";
 
 import { globalSetShowApi } from "@/api/role";
 
@@ -521,6 +529,10 @@ export default defineComponent({
       }
       reacquireHandle();
     };
+    const jumpDoc = (clientAbbreviation,pointPositionName,pointPositionId) =>{
+      router.push({ path: 'document', query: { customer: clientAbbreviation,title:pointPositionName,pointPositionId:pointPositionId } })
+
+    }
     const deleteHandle = (id) => {
       const ids = id
         ? [id]
@@ -606,6 +618,7 @@ export default defineComponent({
       allUsers,
       clients,
       ...toRefs(data),
+      jumpDoc,
       reacquireHandle,
       addEditHandle,
       deleteHandle,
