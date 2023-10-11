@@ -8,7 +8,7 @@
         <el-form-item>
           <el-input
             v-model="search.keyword"
-            placeholder="用户名\企业微信名"
+            placeholder="用户名/企业微信名"
             clearable
           />
         </el-form-item>
