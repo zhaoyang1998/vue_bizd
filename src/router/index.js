@@ -9,7 +9,6 @@ let refresh = true
 const constant = [
   { path: '/', redirect: { name: 'login' }, meta: { title_cn: '重定向', title_en: 'Redirect' } },
   { path: '/login', name: 'login', component: () => import('@/views/constant/login.vue'), meta: { title_cn: '登录', title_en: 'Login' } },
- 
   { path: '/401', name: '401', component: () => import('@/views/constant/401.vue'), meta: { title_cn: '401', title_en: '401' } },
   { path: '/404', name: '404', component: () => import('@/views/constant/404.vue'), meta: { title_cn: '404', title_en: '404' } },
   { path: '/500', name: '500', component: () => import('@/views/constant/500.vue'), meta: { title_cn: '500', title_en: '500' } },
@@ -116,9 +115,6 @@ function addRoutes(menus = [], routeList = []) {
     addRoutes(list, routeList)
   } else {
     main.children = main.children.concat(routeList)
-    console.log('%c!<-------------------- 动态(菜单)路由 s -------------------->', 'color:blue')
-    console.log(main.children)
-    console.log('%c!<-------------------- 动态(菜单)路由 e -------------------->', 'color:blue')
     router.addRoute(main)
   }
 }

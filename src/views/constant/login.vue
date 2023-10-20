@@ -1,101 +1,93 @@
 <template>
-  <div class="login-container flex-box flex_a_i-center flex_j_c-center">
-    <el-card class="width-500">
-      <el-form
-        ref="refForm"
-        :model="form"
-        :rules="rules"
-        @keyup.enter="submit()">
-        <el-form-item prop="userAccount">
-          <el-input v-model="form.userAccount" placeholder="账户" clearable>
-            <template #prefix>
-              <Iconfont name="user" />
-            </template>
-          </el-input>
-        </el-form-item>
-        <el-form-item prop="userPwd">
-          <el-input
-            v-model="form.userPwd"
-            placeholder="密码"
-            show-password
-            clearable>
-            <template #prefix>
-              <Iconfont name="lock" />
-            </template>
-          </el-input>
-        </el-form-item>
-        <!-- <el-form-item prop="code">
-          <el-input
-            class="flex-item_f-1"
-            v-model="form.code"
-            placeholder="验证码"
-            clearable>
-            <template #prefix>
-              <Iconfont name="verification" />
-            </template>
-          </el-input>
-          <img
-            class="height-32 cursor-pointer"
-            :src="captcha"
-            @click="getCaptcha()"
-            alt="验证码">
-        </el-form-item> -->
-        <el-button
-          v-repeat
-          :loading="loading"
-          class="margin_t-20 width-full"
-          type="primary"
-          @click="submit()">登录</el-button>
-      </el-form>
-    </el-card>
+  <div ref="Area" class="vanta_area">
+    <div
+      class="login-container flex-box flex_a_i-center flex_j_c-center"
+      style="height: 100%"
+    >
+      <el-card class="width-500">
+        <el-form
+          ref="refForm"
+          :model="form"
+          :rules="rules"
+          @keyup.enter="submit()"
+        >
+          <el-form-item prop="userAccount">
+            <el-input v-model="form.userAccount" placeholder="账户" clearable>
+              <template #prefix>
+                <Iconfont name="user" />
+              </template>
+            </el-input>
+          </el-form-item>
+          <el-form-item prop="userPwd">
+            <el-input
+              v-model="form.userPwd"
+              placeholder="密码"
+              show-password
+              clearable
+            >
+              <template #prefix>
+                <Iconfont name="lock" />
+              </template>
+            </el-input>
+          </el-form-item>
+          <el-button
+            v-repeat
+            :loading="loading"
+            class="margin_t-20 width-full"
+            type="primary"
+            @click="submit()"
+            >登录</el-button
+          >
+        </el-form>
+      </el-card>
+    </div>
   </div>
 </template>
 
-<script >
-import { defineComponent, nextTick, onBeforeMount, reactive, ref, toRefs } from 'vue'
-import { useRouter } from 'vue-router'
-import { useStore } from 'vuex'
-
-import { ElNotification } from 'element-plus'
-
-import { generateUUID } from '@/utils'
-
-import { captchaApi } from '@/api/login'
+<script>
+import {
+  defineComponent,
+  nextTick,
+  reactive,
+  ref,
+  toRefs,
+  onMounted,
+  onBeforeUnmount,
+} from "vue";
+import * as THREE from "three";
+import BIRDS from "vanta/src/vanta.birds";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 
 export default defineComponent({
   setup() {
-    const router = useRouter()
-    const store = useStore()
-
-    const refForm = ref()
+    const router = useRouter();
+    const store = useStore();
+    const Area = ref();
+    const refForm = ref();
+    let vantaEffect = null;
     const data = reactive({
       loading: false,
-      captcha: '',
+      captcha: "",
       form: {
-        userAccount: '',
-        userPwd: '',
-        uuid: '',
-        code: ''
-      }
-    })
-    const rules = reactive(function() {
-      return {
-        userAccount: [{ required: true, message: '账户不能为空', trigger: 'blur' }],
-        userPwd: [{ required: true, message: '密码不能为空', trigger: 'blur' }],
-      }
-    }())
-
-    /**
-     * @description: 获取验证码图片
-     * @param {*}
-     * @return {*}
-     * @author: gumingchen
-     */
-    const getCaptcha = () => {
-      const uuid = generateUUID()
-      data.form.uuid = uuid
-      data.captcha = captchaApi({ uuid })
-    }
+        userAccount: "",
+        userPwd: "",
+        uuid: "",
+        code: "",
+      },
+    });
+    const rules = reactive(
+      (function () {
+        return {
+          userAccount: [
+            { required: true, message: "账户不能为空", trigger: "blur" },
+          ],
+          userPwd: [
+            { required: true, message: "密码不能为空", trigger: "blur" },
+          ],
+        };
+      })()
+    );
 
     /**
      * @description: 登录表单提交
@@ -104,70 +96,57 @@ export default defineComponent({
      * @author: gumingchen
      */
     const submit = () => {
-      refForm.value.validate(valid => {
+      refForm.value.validate((valid) => {
         if (valid) {
-          data.loading = true
-          store.dispatch('administrator/login', data.form).then(r => {
+          data.loading = true;
+          store.dispatch("administrator/login", data.form).then((r) => {
             if (r) {
-              router.push({ name: 'redirect', replace: true })
+              router.push({ name: "redirect", replace: true });
             } else {
-              getCaptcha()
               nextTick(() => {
-                data.loading = false
-              })
+                data.loading = false;
+              });
             }
-          })
+          });
         }
-      })
-    }
+      });
+    };
+    onMounted(() => {
+      vantaEffect = BIRDS({
+        el: Area.value,
+        THREE: THREE,
+        //如果需要改变样式，要写在这里
+        //因为这里vantaEffect是没有setOptions这个方法的
+        color: 0x16212a,
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200.0,
+        minWidth: 200.0,
+        scale: 1.0,
+        scaleMobile: 1.0,
+        backgroundColor: 0xc54ac,
+        color1: 0xe27a2,
+        color2: 0x29aac8,
+      });
+    });
 
-    // /**
-    //  * @description: 提示
-    //  * @param {*}
-    //  * @return {*}
-    //  * @author: gumingchen
-    //  */
-    // const notifyHandle = () => {
-    //   const message = `
-    //     <div class="login-notify-content">
-    //       <div class="tip">演示环境，部分权限暂不开放</div>
-    //       因系统禁止多点在线 所以会遇到token失效、退出登录的情况属，可以尝试更换帐号登录！
-    //       <div class="margin_t-10">
-    //         <p>总后台帐号：</p>
-    //         <b>demo1，demo2，demo3，demo4</b>
-    //       </div>
-    //       <div class="margin-10-n">
-    //         <p>企业超管帐号：</p>
-    //         <b>admin1，admin2，admin3，admin4</b>
-    //       </div>
-    //       <p>所有帐号的密码统一为：<b>superadmin</b></p>
-    //     </div>
-    //   `
-    //   ElNotification({
-    //     title: '提示',
-    //     dangerouslyUseHTMLString: true,
-    //     message: message,
-    //     type: 'warning',
-    //     position: 'bottom-right',
-    //     duration: 0,
-    //     customClass: 'login-notify'
-    //   })
-    // }
-
-    onBeforeMount(() => {
-      getCaptcha()
-      // notifyHandle()
-    })
-
+    onBeforeUnmount(() => {
+      if (vantaEffect) {
+        vantaEffect.destroy();
+      }
+    });
     return {
       refForm,
       ...toRefs(data),
       rules,
-      getCaptcha,
-      submit
-    }
-  }
-})
+      submit,
+      Area,
+      onBeforeUnmount,
+      onMounted,
+    };
+  },
+});
 </script>
 
 <style lang="scss">
@@ -202,5 +181,24 @@ export default defineComponent({
       color: var(--el-color-danger);
     }
   }
+}
+
+.my-background {
+  overflow: hidden;
+  width: 100vw;
+  height: 100vh;
+}
+
+.vanta_area {
+  width: 100vw;
+  height: 100vh;
+}
+
+.background-image {
+  background-image: url("C:\\Users\\yrway\\Desktop\\1.jpg"); /* 将 'your-image-url.jpg' 替换为实际图像文件的 URL */
+  background-size: cover; /* 可根据需要调整背景大小 */
+  background-repeat: no-repeat; /* 防止背景图片重复 */
+  /* 可以根据需要添加其他背景样式属性，例如 background-position */
+  /* background-position: center center; */
 }
 </style>

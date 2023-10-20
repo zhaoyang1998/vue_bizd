@@ -30,14 +30,49 @@
         @selection-change="selectionHandle"
         border
       >
-        <el-table-column align="center" type="selection" width="50" />
-        <el-table-column align="center" label="用户名" prop="userName" />
-        <el-table-column align="center" label="账号" prop="userAccount" />
-        <el-table-column align="center" label="人员类型" prop="typeName" />
-        <el-table-column align="center" label="企业微信" prop="wxName" />
-        <el-table-column align="center" label="工作量" prop="currentWorkload" />
-        <el-table-column align="center" label="优先级" prop="priority" />
-        <el-table-column align="center" label="操作" width="110" fixed="right">
+        <el-table-column
+          align="center"
+          type="selection"
+          width="50"
+          :show-overflow-tooltip="true"
+        />
+        <el-table-column
+          align="center"
+          label="用户名"
+          prop="userName"
+          :show-overflow-tooltip="true"
+        />
+        <el-table-column
+          align="center"
+          label="账号"
+          prop="userAccount"
+          :show-overflow-tooltip="true"
+        />
+        <el-table-column
+          align="center"
+          label="人员类型"
+          prop="typeName"
+          :show-overflow-tooltip="true"
+        />
+        <el-table-column
+          align="center"
+          label="企业微信"
+          prop="wxName"
+          :show-overflow-tooltip="true"
+        />
+        <el-table-column
+          align="center"
+          label="优先级"
+          prop="priority"
+          :show-overflow-tooltip="true"
+        />
+        <el-table-column
+          align="center"
+          label="操作"
+          width="110"
+          fixed="right"
+          :show-overflow-tooltip="true"
+        >
           <template v-slot="{ row }">
             <el-button type="primary" link @click="addEditHandle(row)"
               >编辑</el-button

@@ -62,6 +62,13 @@ export function finishAssignment(param) {
   })
 }
 
+export function getAllStatus() {
+  return service({
+    url: '/common/getAllStatus',
+    method: 'GET',
+  })
+}
+
 export function allocatingAssignment(param) {
   return service({
     url: '/pointPosition/allocatingAssignment',

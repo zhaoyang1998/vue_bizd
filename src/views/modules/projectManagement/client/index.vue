@@ -34,22 +34,54 @@
         @selection-change="selectionHandle"
         border
       >
-        <el-table-column align="center" type="selection" width="50" />
-        <el-table-column align="center" label="客户名称" prop="clientName" />
+        <el-table-column
+          align="center"
+          type="selection"
+          width="50"
+          :show-overflow-tooltip="true"
+        />
+        <el-table-column
+          align="center"
+          label="客户名称"
+          prop="clientName"
+          :show-overflow-tooltip="true"
+        />
         <el-table-column
           align="center"
           label="客户简称"
           prop="clientAbbreviation"
+          :show-overflow-tooltip="true"
         />
-        <el-table-column align="center" label="客户链接资料" prop="dataLink" />
-        <el-table-column align="center" label="负责人" prop="principalName" />
+        <el-table-column
+          align="center"
+          label="客户链接资料"
+          prop="dataLink"
+          :show-overflow-tooltip="true"
+        />
+        <el-table-column
+          align="center"
+          label="负责人"
+          prop="principalName"
+          :show-overflow-tooltip="true"
+        />
         <el-table-column
           align="center"
           label="canvas账号"
           prop="canvasAccount"
+          :show-overflow-tooltip="true"
         />
-        <el-table-column align="center" label="canvas密码" prop="canvasPwd" />
-        <el-table-column align="center" label="状态" prop="statusName" />
+        <el-table-column
+          align="center"
+          label="canvas密码"
+          prop="canvasPwd"
+          :show-overflow-tooltip="true"
+        />
+        <el-table-column
+          align="center"
+          label="状态"
+          prop="statusName"
+          :show-overflow-tooltip="true"
+        />
         <el-table-column align="center" label="操作" width="110" fixed="right">
           <template v-slot="{ row }">
             <el-button

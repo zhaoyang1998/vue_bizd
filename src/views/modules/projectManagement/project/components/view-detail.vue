@@ -22,9 +22,9 @@
                 <div class="card-header">
                   <span>{{ detail.stepName }}</span>
                   <span
-                    style="position: absolute; left: 60%"
+                    style="position: absolute; left: 80%"
                     v-if="detail.totalTime"
-                    >总耗时：{{ detail.totalTime }} min</span
+                    >耗时：{{ detail.totalTime }} min</span
                   >
                 </div>
               </template>

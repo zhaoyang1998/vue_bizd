@@ -53,8 +53,8 @@
         v-if="client.status % 10 === 0 || !client.clientId"
       >
         <el-select v-model="client.status" clearable placeholder="请选择类型">
-          <el-option label="实施" :value="10" />
-          <el-option label="POC" :value="20" />
+          <el-option label="实施" :value="20" />
+          <el-option label="POC" :value="30" />
         </el-select>
       </el-form-item>
       <el-form-item label="状态" prop="statusName" v-else>

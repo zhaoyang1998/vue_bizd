@@ -11,12 +11,7 @@
         class="SelfFont"
       >
         <el-form-item label="客户">
-          <el-select
-            clearable
-            placeholder="客户"
-            v-model="search.clientId"
-            @change="changeClient"
-          >
+          <el-select clearable placeholder="客户" v-model="search.clientId">
             <el-option
               v-for="item in clients"
               :key="item"
@@ -26,21 +21,35 @@
           </el-select>
         </el-form-item>
         <el-form-item label="状态">
-          <el-select clearable placeholder="客户" v-model="search.status">
+          <el-select clearable placeholder="实施状态" v-model="search.status">
             <el-option
-              v-for="item in clients"
+              v-for="item in statusList"
               :key="item"
-              :label="item.clientAbbreviation"
-              :value="item.clientId"
+              :label="item.Name"
+              :value="item.Value"
             />
           </el-select>
         </el-form-item>
         <el-form-item label="实施时间">
-          <el-input v-model="search.keyword" placeholder="实施时间" clearable />
+          <el-date-picker
+            v-model="search.sTime"
+            value-format="X"
+            format="YYYY-MM-DD HH:mm"
+            type="datetime"
+            placeholder="开始时间"
+          />
+          -
+          <el-date-picker
+            style="padding-left: 13px"
+            v-model="search.eTime"
+            value-format="X"
+            format="YYYY-MM-DD HH:mm"
+            type="datetime"
+            placeholder="结束时间"
+          />
         </el-form-item>
-        <el-form-item label="关键字" width="100px">
+        <el-form-item label="关键字">
           <el-input
-            width="300px"
             v-model="search.keyword"
             placeholder="点位名称/地址/设备SN/IP"
             clearable
@@ -66,14 +75,15 @@
           <el-button type="danger" @click="deleteHandle()">批量删除</el-button>
           <el-popover placement="right-start" :width="200" trigger="click">
             <template #reference>
-              <el-button slot="reference" type="primary">
-                <el-icon><Grid /></el-icon
-              ></el-button>
+              <el-button type="primary">
+                <el-icon><Grid /></el-icon>
+              </el-button>
             </template>
-            <el-checkbox-group v-model="selected" @change="handleCheckedChange">
+            <el-checkbox-group v-model="selected">
               <el-checkbox
-                v-for="item in headers"
+                v-for="(item, index) in headers"
                 :key="item"
+                @change="handleCheckedChange(index)"
                 :label="item.attr"
                 >{{ item.name }}</el-checkbox
               >
@@ -87,6 +97,7 @@
         ref="refTable"
         v-loading="loading"
         :data="pointPosition"
+        :row-key="getRowKey"
         @selection-change="selectionHandle"
         stripe
         tooltip-effect="light"
@@ -94,112 +105,40 @@
         border
         class="SelfFont"
       >
-        <el-table-column fixed align="center" type="selection" width="50" />
         <el-table-column
+          fixed
           align="center"
-          label="客户"
-          prop="clientAbbreviation"
-          :show-overflow-tooltip="true"
-          v-if="headers[1].show"
+          type="selection"
+          width="50"
+          :reserve-selection="true"
         />
-        <el-table-column
-          align="center"
-          label="点位名称"
-          prop="pointPositionName"
-          width="200px"
-          show-overflow-tooltip="true"
-        />
-        <el-table-column
-          align="center"
-          label="地址"
-          prop="address"
-          width="200px"
-          :show-overflow-tooltip="true"
-        />
-        <el-table-column
-          align="center"
-          label="办公人数"
-          prop="peopleNumbers"
-          :show-overflow-tooltip="true"
-        />
-        <el-table-column
-          align="center"
-          label="实施人员"
-          prop="implementerName"
-          :show-overflow-tooltip="true"
-        />
-        <el-table-column
-          align="center"
-          label="ip网段"
-          prop="ip"
-          :show-overflow-tooltip="true"
-        />
-        <el-table-column
-          align="center"
-          label="设备别名"
-          prop="cpeName"
-          :show-overflow-tooltip="true"
-        />
-        <el-table-column
-          align="center"
-          label="状态"
-          prop="statusName"
-          width="120px"
-          ><template #default="scope">
-            <el-tag
-              effect="dark"
-              :color="getStatusColor(scope.row.status)"
-              disable-transitions
-              >{{ scope.row.statusName }}</el-tag
-            >
-          </template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          label="负责人"
-          prop="userName"
-          :show-overflow-tooltip="true"
-        />
-        <el-table-column
-          align="center"
-          label="实施资料链接"
-          prop="dataLink"
-          min-width="140"
-          :show-overflow-tooltip="true"
-        >
-          <template #default="scope">
-            <a :href="scope.row.dataLink" target="_blank">{{
-              scope.row.dataLink
-            }}</a>
-          </template>
-        </el-table-column>
-        <el-table-column
-          align="center"
-          label="预计实施时间"
-          prop="scheduledTime"
-          min-width="150"
-          :show-overflow-tooltip="true"
-        />
-        <el-table-column
-          align="center"
-          label="开始时间"
-          prop="startTime"
-          min-width="150"
-          :show-overflow-tooltip="true"
-        />
-        <el-table-column
-          align="center"
-          label="结束时间"
-          prop="endTime"
-          min-width="150"
-          :show-overflow-tooltip="true"
-        />
-        <el-table-column
-          align="center"
-          label="备注"
-          prop="remark"
-          :show-overflow-tooltip="true"
-        />
+        <template v-for="item in headers" :key="item">
+          <el-table-column
+            align="center"
+            :label="item.name"
+            :prop="item.attr"
+            :show-overflow-tooltip="true"
+            v-if="item.show"
+          >
+            <template #default="scope">
+              <el-tag
+                v-if="item.attr === 'statusName'"
+                effect="dark"
+                :color="getStatusColor(scope.row.status)"
+                disable-transitions
+              >
+                {{ scope.row.statusName }}
+              </el-tag>
+              <a
+                :herf="scope.row.dataLink"
+                v-if="item.attr === 'dataLink'"
+                target="_blank"
+              >
+                {{ scope.row.dataLink }}
+              </a>
+            </template>
+          </el-table-column>
+        </template>
         <el-table-column align="center" label="操作" width="140" fixed="right">
           <template v-slot="{ row }">
             <el-button
@@ -219,10 +158,17 @@
               >删除</el-button
             >
             <el-button
+              class="fontSize"
               type="danger"
               link
               style="margin-left: 12px"
-              @click="jumpDoc(row.clientAbbreviation,row.pointPositionName,row.pointPositionId)"
+              @click="
+                jumpDoc(
+                  row.clientAbbreviation,
+                  row.pointPositionName,
+                  row.pointPositionId
+                )
+              "
               >实施文档</el-button
             >
             <el-button
@@ -276,7 +222,6 @@
           </template>
         </el-table-column>
       </el-table>
-
       <AddEdit
         ref="refAddEdit"
         v-if="visible"
@@ -308,7 +253,6 @@ import {
   nextTick,
   onMounted,
 } from "vue";
-
 import { ElMessage, ElMessageBox } from "element-plus";
 import ContainerSidebar from "@/components/container-sidebar/index.vue";
 import EnterpriseSidebar from "@/components/enterprise-sidebar/index.vue";
@@ -330,6 +274,7 @@ import {
   finishAssignment,
   cancelAssignment,
   exportExcel,
+  getAllStatus,
 } from "@/api/project";
 import { getAllClients } from "@/api/client";
 import { getDeliveryUser, getAllUsers } from "@/api/user";
@@ -360,7 +305,13 @@ export default defineComponent({
         pageNumber: page.current,
         keyword: null,
         clientId: "",
+        status: null,
+        eTime: null,
+        sTime: null,
+        selected: [],
+        ids: [],
       },
+      statusList: [],
       selection: [],
       pointPosition: [],
       headers: [
@@ -370,19 +321,14 @@ export default defineComponent({
           name: "客户",
         },
         {
+          attr: "pointPositionName",
+          show: 1,
+          name: "点位名称",
+        },
+        {
           attr: "address",
           show: 1,
           name: "地址",
-        },
-        {
-          attr: "statusName",
-          show: 1,
-          name: "状态",
-        },
-        {
-          attr: "remark",
-          show: 1,
-          name: "备注",
         },
         {
           attr: "userName",
@@ -395,9 +341,29 @@ export default defineComponent({
           name: "实施人",
         },
         {
-          attr: "pointPositionName",
+          attr: "ip",
           show: 1,
-          name: "点位名称",
+          name: "IP网段",
+        },
+        {
+          attr: "dataLink",
+          show: 1,
+          name: "资料链接",
+        },
+        {
+          attr: "cpeName",
+          show: 1,
+          name: "设备别名",
+        },
+        {
+          attr: "statusName",
+          show: 1,
+          name: "状态",
+        },
+        {
+          attr: "scheduledTime",
+          show: 1,
+          name: "预计实施时间",
         },
         {
           attr: "startTime",
@@ -410,9 +376,9 @@ export default defineComponent({
           name: "结束时间",
         },
         {
-          attr: "scheduledTime",
+          attr: "remark",
           show: 1,
-          name: "预计实施时间",
+          name: "备注",
         },
       ],
       selected: [],
@@ -422,13 +388,16 @@ export default defineComponent({
     const users = ref([]);
     const allUsers = ref([]);
     const clients = ref([]);
-    const status = ref([]);
     const pagination = reactive({
       pageSize: page.size,
       pageNumber: page.current,
     });
+    const getRowKey = (row) => {
+      //唯一标识
+      return row.pointPositionId;
+    };
     const handleCheckedChange = (val) => {
-      console.log(data.selected);
+      data.headers[val].show = data.headers[val].show === 0 ? 1 : 0;
     };
     const getStatusColor = (status) => {
       switch (status % 10) {
@@ -443,7 +412,14 @@ export default defineComponent({
       }
     };
     const handleExportExcel = () => {
+      const ids = data.selection.map((item) => item.pointPositionId);
+      data.search.ids = ids;
+      data.search.selected = data.selected;
       exportExcel(data.search);
+    };
+    const getAllStatusText = async () => {
+      const u = await getAllStatus();
+      data.statusList = JSON.parse(u.data);
     };
     const searchPointPosition = async () => {
       const search = data.search;
@@ -452,7 +428,7 @@ export default defineComponent({
       const c = await getPointPositionByKeyword(search);
       data.pointPosition = JSON.parse(c.data);
       page.current = c.cur;
-      page.total = c.total;
+      page.total = c.total === undefined ? 0 : c.total;
     };
     const handleGetAllPointPosition = async (params) => {
       const p = await getAllPointPosition(params);
@@ -529,10 +505,20 @@ export default defineComponent({
       }
       reacquireHandle();
     };
-    const jumpDoc = (clientAbbreviation,pointPositionName,pointPositionId) =>{
-      router.push({ path: 'document', query: { customer: clientAbbreviation,title:pointPositionName,pointPositionId:pointPositionId } })
-
-    }
+    const jumpDoc = (
+      clientAbbreviation,
+      pointPositionName,
+      pointPositionId
+    ) => {
+      router.push({
+        path: "document",
+        query: {
+          customer: clientAbbreviation,
+          title: pointPositionName,
+          pointPositionId: pointPositionId,
+        },
+      });
+    };
     const deleteHandle = (id) => {
       const ids = id
         ? [id]
@@ -596,6 +582,7 @@ export default defineComponent({
     };
     onMounted(async () => {
       await handleGetAllPointPosition(pagination);
+      await getAllStatusText();
       const u = await getAllClients();
       data.headers.forEach((e) => {
         if (e.show === 1) {
@@ -606,6 +593,7 @@ export default defineComponent({
     });
 
     return {
+      data,
       refContainerSidebar,
       refForm,
       refTable,
@@ -640,6 +628,7 @@ export default defineComponent({
       handleExportExcel,
       getStatusColor,
       handleCheckedChange,
+      getRowKey,
     };
   },
 });

@@ -68,16 +68,10 @@
           placeholder="请选择实施类型"
           :disabled="pointPosition.status % 10 !== 0 && pointPosition.status"
         >
-          <el-option label="调研" :value="0" />
-          <el-option label="实施" :value="1" />
-          <el-option label="POC" :value="2" />
+          <el-option label="调研" :value="1" />
+          <el-option label="实施" :value="2" />
+          <el-option label="POC" :value="3" />
         </el-select>
-      </el-form-item>
-      <el-form-item label="办公人数" prop="seopleNumbers">
-        <el-input
-          v-model.number="pointPosition.peopleNumbers"
-          placeholder="办公人数"
-        />
       </el-form-item>
       <el-form-item label="IP网段" prop="ip">
         <el-input v-model="pointPosition.ip" placeholder="IP网段" />
@@ -126,7 +120,6 @@ export default defineComponent({
         userId: "",
         address: "",
         type: "",
-        peopleNumbers: "",
         scheduledTime: "",
         implementerId: "",
         cpeName: "",
