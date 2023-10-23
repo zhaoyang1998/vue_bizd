@@ -193,12 +193,4 @@ export default defineComponent({
   width: 100vw;
   height: 100vh;
 }
-
-.background-image {
-  background-image: url("C:\\Users\\yrway\\Desktop\\1.jpg"); /* 将 'your-image-url.jpg' 替换为实际图像文件的 URL */
-  background-size: cover; /* 可根据需要调整背景大小 */
-  background-repeat: no-repeat; /* 防止背景图片重复 */
-  /* 可以根据需要添加其他背景样式属性，例如 background-position */
-  /* background-position: center center; */
-}
 </style>
