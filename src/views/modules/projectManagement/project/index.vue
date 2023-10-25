@@ -296,6 +296,21 @@ export default defineComponent({
     const refStatusChange = ref();
     const refDrawer = ref();
     const { page } = usePage();
+    const selected = ref([
+      "clientAbbreviation",
+      "pointPositionName",
+      "address",
+      "userName",
+      "implementerName",
+      "ip",
+      "dataLink",
+      "cpeName",
+      "statusName",
+      "scheduledTime",
+      "startTime",
+      "endTime",
+      "remark",
+    ]);
     const data = reactive({
       active: "",
       loading: false,
@@ -381,21 +396,7 @@ export default defineComponent({
           name: "备注",
         },
       ],
-      selected: [
-        "clientAbbreviation",
-        "pointPositionName",
-        "address",
-        "userName",
-        "implementerName",
-        "ip",
-        "dataLink",
-        "cpeName",
-        "statusName",
-        "scheduledTime",
-        "startTime",
-        "endTime",
-        "remark",
-      ],
+
       clients: [],
       status: [],
     });
@@ -428,7 +429,7 @@ export default defineComponent({
     const handleExportExcel = () => {
       const ids = data.selection.map((item) => item.pointPositionId);
       data.search.ids = ids;
-      data.search.selected = data.selected;
+      data.search.selected = selected;
       exportExcel(data.search);
     };
     const getAllStatusText = async () => {
@@ -617,6 +618,7 @@ export default defineComponent({
       refViewDetail,
       page,
       users,
+      selected,
       allUsers,
       clients,
       ...toRefs(data),
