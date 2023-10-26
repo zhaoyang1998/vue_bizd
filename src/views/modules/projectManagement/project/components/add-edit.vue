@@ -37,10 +37,10 @@
           placeholder="请选择所属客户"
         >
           <el-option
+            v-for="item in clients"
             :key="item"
             :label="item.clientAbbreviation"
             :value="item.clientId"
-            v-for="item in clients"
           />
         </el-select>
       </el-form-item>
@@ -101,10 +101,10 @@ import { defineComponent, nextTick, reactive, ref, toRefs } from "vue";
 import { ElMessage } from "element-plus";
 
 import { addPointPosition, updatePointPosition } from "@/api/project";
-
+import { getAllClients } from "@/api/client";
 export default defineComponent({
   emits: ["refresh"],
-  props: { clients: Array, users: Array },
+  props: { users: Array },
   setup(props, { emit }) {
     // const userdata = toRef(props, "user");
     const refForm = ref();
@@ -126,6 +126,7 @@ export default defineComponent({
         status: 0,
         dataLink: "",
       },
+      clients: [],
     });
 
     const rules = reactive(
@@ -144,7 +145,7 @@ export default defineComponent({
     );
 
     const init = async (pointPosition) => {
-      console.log(props.clients);
+      await handleGetAllClientsAndUsers();
       if (pointPosition) {
         data.pointPosition = JSON.parse(JSON.stringify(pointPosition));
       } else {
@@ -156,6 +157,10 @@ export default defineComponent({
       });
     };
 
+    const handleGetAllClientsAndUsers = async () => {
+      const u = await getAllClients();
+      data.clients = JSON.parse(u.data);
+    };
     /**
      * @description: 表单验证提交
      * @param {*}
@@ -200,6 +205,7 @@ export default defineComponent({
       rules,
       init,
       submit,
+      handleGetAllClientsAndUsers,
       dialogClosedHandle,
     };
   },
