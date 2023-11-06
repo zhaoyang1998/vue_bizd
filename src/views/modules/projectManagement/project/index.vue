@@ -583,12 +583,12 @@ export default defineComponent({
     const selectionHandle = (val) => {
       data.selection = val;
     };
-    const pageChangeHandle = (argPage) => {
+    const pageChangeHandle = async (argPage) => {
       page.current = argPage.current;
       page.size = argPage.size;
       pagination.pageNumber = page.current;
       pagination.pageSize = page.size;
-      handleGetAllPointPosition(pagination);
+      await searchPointPosition();
     };
     const changeHandle = (_row) => {
       refContainerSidebar.value.setScrollTop();
@@ -599,11 +599,6 @@ export default defineComponent({
       await getAllStatusText();
       const u = await getAllClients();
       data.clients = JSON.parse(u.data);
-      data.headers.forEach((e) => {
-        if (e.show === 1) {
-          data.selected.push(e.attr);
-        }
-      });
     });
 
     return {
