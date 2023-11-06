@@ -598,12 +598,12 @@ export default defineComponent({
       await handleGetAllPointPosition(pagination);
       await getAllStatusText();
       const u = await getAllClients();
+      data.clients = JSON.parse(u.data);
       data.headers.forEach((e) => {
         if (e.show === 1) {
           data.selected.push(e.attr);
         }
       });
-      data.clients = JSON.parse(u.data);
     });
 
     return {
