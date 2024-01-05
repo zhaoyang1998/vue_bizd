@@ -21,11 +21,12 @@
       </el-form-item>
     </el-form>
 
-    <Editor v-model="content" :api-key="apiKey" :init="init" />
+    <Editor v-model="content" :init="init" />
   </div>
 </template>
 
 <script>
+
 import Editor from "@tinymce/tinymce-vue";
 import { reactive, ref, toRefs } from "@vue/reactivity";
 import { Upload, Search } from "@element-plus/icons-vue";
@@ -91,7 +92,7 @@ export default {
       }
     };
     const tiny = reactive({
-      apiKey: "qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc", //https://github.com/tinymce/tinymce-vue/blob/main/src/demo/views/Iframe.vue
+      // apiKey: "qagffr3pkuv17a8on1afax661irst1hbr4e6tbv888sz91jc", //https://github.com/tinymce/tinymce-vue/blob/main/src/demo/views/Iframe.vue
       init: {
         content_css: false, // 禁用默认样式表
         fullpage_default_doctype: "<!DOCTYPE html>", // 设置全屏模式的 doctype
@@ -108,6 +109,7 @@ export default {
         // statusbar: false,  //最下方的元素路径和字数统计那一栏是否显示
         // elementpath: false, //元素路径是否显示
         // inline: true,   //内联模式
+        base_url: "/tinymce",
         font_formats:
           "微软雅黑=Microsoft YaHei,Helvetica Neue,PingFang SC,sans-serif;苹果苹方=PingFang SC,Microsoft YaHei,sans-serif;宋体=simsun,serif;仿宋体=FangSong,serif;黑体=SimHei,sans-serif;Arial=arial,helvetica,sans-serif;Arial Black=arial black,avant garde;Book Antiqua=book antiqua,palatino;", //字体样式
         plugins:
